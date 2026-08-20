@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wiki: Planes de Carrera</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ==================== -->
+<!-- PANEL DE PERSONALIZACIÓN -->
+<!-- ==================== -->
+<div id="panelPersonalizacion" class="panel-personalizacion">
+    <div class="panel-header">
+        <h3>🎨 Personalizar</h3>
+        <button onclick="togglePanel()" class="btn-cerrar-panel">✕</button>
+    </div>
+    <div class="panel-body">
+        <div class="grupo-control">
+            <label>📌 Seleccionar sección:</label>
+            <select id="selectorSeccion" onchange="cargarEstilosSeccion()">
+                <option value="global">🌍 Global (toda la página)</option>
+                <option value="header">📋 Header</option>
+                <option value="plan-carrera">📌 Plan de Carrera</option>
+                <option value="sucesion">🔄 Programas de Sucesión</option>
+                <option value="movilidad">🌍 Movilidad</option>
+                <option value="talento-humano">🧠 Talento Humano</option>
+                <option value="recursos">📚 Recursos</option>
+                <option value="estadisticas">📊 Estadísticas</option>
+            </select>
+        </div>
+        <div class="grupo-control">
+            <label>🎨 Color de fondo:</label>
+            <div class="control-color">
+                <input type="color" id="colorFondo" onchange="aplicarColorFondo()">
+                <input type="text" id="colorFondoText" placeholder="#ffffff" onchange="aplicarColorFondo()">
+            </div>
+        </div>
+        <div class="grupo-control">
+            <label>✏️ Color de texto:</label>
+            <div class="control-color">
+                <input type="color" id="colorTexto" onchange="aplicarColorTexto()">
+                <input type="text" id="colorTextoText" placeholder="#1a2a3a" onchange="aplicarColorTexto()">
+            </div>
+        </div>
+        <div class="grupo-control">
+            <label>📏 Tamaño de fuente:</label>
+            <div class="control-rango">
+                <input type="range" id="tamanoFuente" min="12" max="28" value="16" oninput="aplicarTamanoFuente()">
+                <span id="tamanoFuenteValor">16px</span>
+            </div>
+        </div>
+        <div class="grupo-control">
+            <label>🔤 Tipo de fuente:</label>
+            <select id="tipoFuente" onchange="aplicarTipoFuente()">
+                <option value="'Inter', sans-serif">Inter (Moderna)</option>
+                <option value="'Segoe UI', sans-serif">Segoe UI</option>
+                <option value="'Georgia', serif">Georgia (Serif)</option>
+                <option value="'Playfair Display', serif">Playfair Display</option>
+                <option value="'Courier New', monospace">Courier New</option>
+                <option value="'Arial', sans-serif">Arial</option>
+                <option value="'Times New Roman', serif">Times New Roman</option>
+            </select>
+        </div>
+        <div class="grupo-control">
+            <button onclick="resetearEstilos()" class="btn-resetear">🔄 Resetear estilos</button>
+        </div>
+        <div class="grupo-control">
+            <label>📐 Layout de sección:</label>
+            <select id="selectorLayout" onchange="cambiarLayoutGlobal()">
+                <option value="vertical">Vertical</option>
+                <option value="horizontal">Horizontal</option>
+                <option value="grid">Grid</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<button onclick="togglePanel()" class="btn-abrir-panel" id="btnAbrirPanel">🎨 Personalizar</button>
+
+<!-- ==================== -->
+<!-- HEADER -->
+<!-- ==================== -->
+<header>
+    <h1 id="titulo-principal" contenteditable="true">📘 Planes de Carrera como Oportunidad de Desarrollo Organizacional</h1>
+    <p id="subtitulo" contenteditable="true">Wiki colaborativa - Equipo de Psicología Organizacional</p>
+    <nav>
+        <ul>
+            <li><a href="#plan-carrera">📌 Plan de Carrera</a></li>
+            <li><a href="#sucesion">🔄 Programas de Sucesión</a></li>
+            <li><a href="#movilidad">🌍 Movilidad Interna y Externa</a></li>
+            <li><a href="#talento-humano">🧠 Aportes del Talento Humano</a></li>
+            <li><a href="#recursos">📚 Recursos</a></li>
+            <li><a href="#estadisticas">📊 Estadísticas</a></li>
+        </ul>
+    </nav>
+    <div class="edit-notice">💡 <strong>Modo edición:</strong> Haz clic en cualquier texto para editarlo directamente</div>
+    <div style="margin-top:15px;">
+        <button onclick="verVistaFinal()" class="btn-vista-final" style="border:none;cursor:pointer;font-size:1.05rem;">✨ Ver Vista Final</button>
+    </div>
+</header>
+
+<!-- ==================== -->
+<!-- CONTENIDO PRINCIPAL -->
+<!-- ==================== -->
+<main>
+
+    <!-- ======================================== -->
+    <!-- SECCIÓN 1: PLAN DE CARRERA -->
+    <!-- ======================================== -->
+    <section id="plan-carrera">
+        <div class="seccion-header">
+            <h2 contenteditable="true">📌 Plan de Carrera</h2>
+            <div class="seccion-botones">
+                <button onclick="insertarImagen('plan-carrera')" class="btn-insertar">🖼️ Imagen</button>
+                <button onclick="insertarVideo('plan-carrera')" class="btn-insertar">🎬 Video</button>
+            </div>
+        </div>
+        <div class="seccion-contenido" id="contenido-plan-carrera">
+            <div class="panel-editable" data-id="panel1">
+                <div contenteditable="true">
+                    <p>El <strong>plan de carrera</strong> es una herramienta estratégica que permite a los colaboradores visualizar su crecimiento dentro de la organización.</p>
+                    <h3>📖 Definición</h3>
+                    <p>Ruta de crecimiento profesional dentro de una empresa que incluye:</p>
+                    <ul>
+                        <li>Identificación de metas profesionales</li>
+                        <li>Evaluación de competencias actuales</li>
+                        <li>Diseño de plan de desarrollo</li>
+                        <li>Seguimiento y retroalimentación</li>
+                    </ul>
+                </div>
+                <div class="panel-controls">
+                    <button onclick="moverPanel(this,'up')">⬆️</button>
+                    <button onclick="moverPanel(this,'down')">⬇️</button>
+                    <button onclick="duplicarPanel(this)">📋</button>
+                    <button onclick="eliminarPanel(this)" class="btn-eliminar">🗑️</button>
+                </div>
+            </div>
+            <div class="panel-editable" data-id="panel2">
+                <div contenteditable="true">
+                    <h3>⭐ Importancia</h3>
+                    <ul>
+                        <li><strong>Motivación:</strong> Los empleados se sienten valorados</li>
+                        <li><strong>Retención:</strong> Reduce la rotación de personal</li>
+                        <li><strong>Productividad:</strong> Colaboradores más comprometidos</li>
+                    </ul>
+                </div>
+                <div class="panel-controls">
+                    <button onclick="moverPanel(this,'up')">⬆️</button>
+                    <button onclick="moverPanel(this,'down')">⬇️</button>
+                    <button onclick="duplicarPanel(this)">📋</button>
+                    <button onclick="eliminarPanel(this)" class="btn-eliminar">🗑️</button>
+                </div>
+            </div>
+            <div class="panel-editable" data-id="panel3">
+                <div contenteditable="true">
+                    <h3>📋 Ejemplo práctico</h3>
+                    <p>Una psicóloga organizacional puede seguir esta ruta:</p>
+                    <ul>
+                        <li><strong>Nivel 1:</strong> Asistente de RH</li>
+                        <li><strong>Nivel 2:</strong> Coordinadora de Talento Humano</li>
+                        <li><strong>Nivel 3:</strong> Directora de Desarrollo Organizacional</li>
+                    </ul>
+                </div>
+                <div class="panel-controls">
+                    <button onclick="moverPanel(this,'up')">⬆️</button>
+                    <button onclick="moverPanel(this,'down')">⬇️</button>
+                    <button onclick="duplicarPanel(this)">📋</button>
+                    <button onclick="eliminarPanel(this)" class="btn-eliminar">🗑️</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================================== -->
+    <!-- SECCIÓN 2: PROGRAMAS DE SUCESIÓN -->
+    <!-- ======================================== -->
+    <section id="sucesion">
+        <div class="seccion-header">
+            <h2 contenteditable="true">🔄 Programas de Sucesión</h2>
+            <div class="seccion-botones">
+                <button onclick="insertarImagen('sucesion')" class="btn-insertar">🖼️ Imagen</button>
+                <button onclick="insertarVideo('sucesion')" class="btn-insertar">🎬 Video</button>
+            </div>
+        </div>
+        <div class="seccion-contenido" id="contenido-sucesion">
+            <div class="panel-editable" data-id="panel1">
+                <div contenteditable="true">
+                    <p>Los <strong>programas de sucesión</strong> aseguran que haya talento preparado para ocupar posiciones clave.</p>
+                    <h3>🎯 Objetivos</h3>
+                    <ul>
+                        <li>Identificar empleados con alto potencial</li>
+                        <li>Preparar líderes para el futuro</li>
+                        <li>Garantizar continuidad operativa</li>
+                    </ul>
+                </div>
+                <div class="panel-controls">
+                    <button onclick="moverPanel(this,'up')">⬆️</button>
+                    <button onclick="moverPanel(this,'down')">⬇️</button>
+                    <button onclick="duplicarPanel(this)">📋</button>
+                    <button onclick="eliminarPanel(this)" class="btn-eliminar">🗑️</button>
+                </div>
+            </div>
+            <div class="panel-editable" data-id="panel2">
+                <div contenteditable="true">
+                    <h3>✅ Beneficios</h3>
+                    <ul>
+                        <li>Reducción de riesgos por vacantes</li>
+                        <li>Desarrollo interno de talento</li>
+                        <li>Cultura de crecimiento profesional</li>
+                    </ul>
+                </div>
+                <div class="panel-controls">
+                    <button onclick="moverPanel(this,'up')">⬆️</button>
+                    <button onclick="moverPanel(this,'down')">⬇️</button>
+                    <button onclick="duplicarPanel(this)">📋</button>
+                    <button onclick="eliminarPanel(this)" class="btn-eliminar">🗑️</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================================== -->
+    <!-- SECCIÓN 3: MOVILIDAD -->
+    <!-- ======================================== -->
+    <section id="movilidad">
+        <div class="seccion-header">
+            <h2 contenteditable="true">🌍 Movilidad Interna y Externa</h2>
+            <div class="seccion-botones">
+                <button onclick="insertarImagen('movilidad')" class="btn-insertar">🖼️ Imagen</button>
+                <button onclick="insertarVideo('movilidad')" class="btn-insertar">🎬 Video</button>
+            </div>
+        </div>
+        <div class="seccion-contenido" id="contenido-movilidad">
+            <div class="panel-editable" data-id="panel1">
+                <div contenteditable="true">
+                    <h3>🏢 Movilidad Interna</h3>
+                    <ul>
+                        <li><strong>Definición:</strong> Cambios dentro de la misma organización</li>
+                        <li><strong>Tipos:</strong> Ascensos, traslados, rotación</li>
+                    </ul>
+                </div>
+                <div class="panel-controls">
+                    <button onclick="moverPanel(this,'up')">⬆️</button>
+                    <button onclick="moverPanel(this,'down')">⬇️</button>
+                    <button onclick="duplicarPanel(this)">📋</button>
+                    <button onclick="eliminarPanel(this)" class="btn-eliminar">🗑️</button>
+                </div>
+            </div>
+            <div class="panel-editable" data-id="panel2">
+                <div contenteditable="true">
+                    <h3>🌐 Movilidad Externa</h3>
+                    <ul>
+                        <li><strong>Definición:</strong> Experiencias fuera de la organización</li>
+                        <li><strong>Tipos:</strong> Intercambios, estudios, prácticas</li>
+                    </ul>
+                </div>
+                <div class="panel-controls">
+                    <button onclick="moverPanel(this,'up')">⬆️</button>
+                    <button onclick="moverPanel(this,'down')">⬇️</button>
+                    <button onclick="duplicarPanel(this)">📋</button>
+                    <button onclick="eliminarPanel(this)" class="btn-eliminar">🗑️</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================================== -->
+    <!-- SECCIÓN 4: TALENTO HUMANO -->
+    <!-- ======================================== -->
+    <section id="talento-humano">
+        <div class="seccion-header">
+            <h2 contenteditable="true">🧠 Aportes del Talento Humano</h2>
+            <div class="seccion-botones">
+                <button onclick="insertarImagen('talento-humano')" class="btn-insertar">🖼️ Imagen</button>
+                <button onclick="insertarVideo('talento-humano')" class="btn-insertar">🎬 Video</button>
+            </div>
+        </div>
+        <div class="seccion-contenido" id="contenido-talento-humano">
+            <div class="panel-editable" data-id="panel1">
+                <div contenteditable="true">
+                    <p>El <strong>área de Talento Humano</strong> es clave para diseñar e implementar los planes de carrera.</p>
+                    <h3>🔧 Funciones clave</h3>
+                    <ul>
+                        <li><strong>Diagnóstico:</strong> Evaluación de competencias</li>
+                        <li><strong>Diseño:</strong> Creación de rutas formativas</li>
+                        <li><strong>Implementación:</strong> Capacitación continua</li>
+                        <li><strong>Monitoreo:</strong> Seguimiento y retroalimentación</li>
+                    </ul>
+                </div>
+                <div class="panel-controls">
+                    <button onclick="moverPanel(this,'up')">⬆️</button>
+                    <button onclick="moverPanel(this,'down')">⬇️</button>
+                    <button onclick="duplicarPanel(this)">📋</button>
+                    <button onclick="eliminarPanel(this)" class="btn-eliminar">🗑️</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================================== -->
+    <!-- SECCIÓN 5: ESTADÍSTICAS -->
+    <!-- ======================================== -->
+    <section id="estadisticas">
+        <div class="seccion-header">
+            <h2 contenteditable="true">📊 Estadísticas y Datos</h2>
+            <div class="seccion-botones">
+                <button onclick="insertarImagen('estadisticas')" class="btn-insertar">🖼️ Imagen</button>
+                <button onclick="insertarVideo('estadisticas')" class="btn-insertar">🎬 Video</button>
+            </div>
+        </div>
+        <div class="seccion-contenido" id="contenido-estadisticas">
+            <div class="panel-editable" data-id="panel1">
+                <div contenteditable="true">
+                    <p>Datos importantes sobre planes de carrera en organizaciones:</p>
+                    <ul>
+                        <li>📈 <strong>85%</strong> de las empresas tienen plan de carrera</li>
+                        <li>📉 <strong>30%</strong> reducción en rotación con plan de carrera</li>
+                        <li>📊 <strong>70%</strong> de empleados valoran crecimiento profesional</li>
+                    </ul>
+                </div>
+                <div class="panel-controls">
+                    <button onclick="moverPanel(this,'up')">⬆️</button>
+                    <button onclick="moverPanel(this,'down')">⬇️</button>
+                    <button onclick="duplicarPanel(this)">📋</button>
+                    <button onclick="eliminarPanel(this)" class="btn-eliminar">🗑️</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================================== -->
+    <!-- SECCIÓN 6: RECURSOS -->
+    <!-- ======================================== -->
+    <section id="recursos">
+        <div class="seccion-header">
+            <h2 contenteditable="true">📚 Recursos y Referencias</h2>
+            <div class="seccion-botones">
+                <button onclick="insertarImagen('recursos')" class="btn-insertar">🖼️ Imagen</button>
+                <button onclick="insertarVideo('recursos')" class="btn-insertar">🎬 Video</button>
+            </div>
+        </div>
+        <div class="seccion-contenido" id="contenido-recursos">
+            <div class="panel-editable" data-id="panel1">
+                <div contenteditable="true">
+                    <p><em>Agreguen aquí artículos, videos y recursos importantes</em></p>
+                    <ul>
+                        <li>📄 "Relaciones intergeneracionales en el mundo del trabajo" (1980-2007)</li>
+                        <li>📄 "Centennials: razones para tener un plan de carrera"</li>
+                    </ul>
+                </div>
+                <div class="panel-controls">
+                    <button onclick="moverPanel(this,'up')">⬆️</button>
+                    <button onclick="moverPanel(this,'down')">⬇️</button>
+                    <button onclick="duplicarPanel(this)">📋</button>
+                    <button onclick="eliminarPanel(this)" class="btn-eliminar">🗑️</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- ==================== -->
+<!-- FOOTER -->
+<!-- ==================== -->
+<footer>
+    <p contenteditable="true">📅 Wiki colaborativa - Equipo de Psicología Organizacional | 2026</p>
+    <div style="margin-top:15px;">
+        <button onclick="verVistaFinal()" class="btn-vista-final" style="border:none;cursor:pointer;font-size:1.05rem;">✨ Ver Vista Final (Solo Lectura)</button>
+    </div>
+</footer>
+
+<!-- ==================== -->
+<!-- BOTONES DE GUARDADO -->
+<!-- ==================== -->
+<div class="save-button">
+    <button onclick="guardarCambios()">💾 Guardar cambios</button>
+    <button onclick="resetearPagina()">🔄 Resetear</button>
+</div>
+
+<!-- ==================== -->
+<!-- MODAL PARA INSERTAR -->
+<!-- ==================== -->
+<div id="modalInsertar" class="modal-insertar">
+    <div class="modal-contenido">
+        <h3 id="modalTitulo">Insertar</h3>
+        <label id="modalLabel">Ingresa la URL:</label>
+        <input type="text" id="modalInput" placeholder="https://ejemplo.com/">
+        <div class="modal-botones">
+            <button onclick="confirmarInsercion()" class="btn-aceptar">✅ Insertar</button>
+            <button onclick="cerrarModal()" class="btn-cancelar">❌ Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== -->
+<!-- SCRIPTS -->
+<!-- ==================== -->
+<script src="script.js"></script>
+<script>
+    window.addEventListener('load', function() {
+        const contenidoGuardado = localStorage.getItem('wiki-contenido');
+        if (contenidoGuardado) {
+            console.log('📂 Hay cambios guardados. Fecha: ' + localStorage.getItem('wiki-fecha'));
+        }
+    });
+</script>
+
+</body>
+</html>
