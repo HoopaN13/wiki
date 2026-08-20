@@ -230,12 +230,13 @@ function resetearPagina() {
 
 let seccionActualModal = '';
 let tipoInsercionModal = '';
+let imagenSubida = null;
 
 // Insertar imagen - abre modal
 function insertarImagen(seccionId) {
     seccionActualModal = seccionId;
     tipoInsercionModal = 'imagen';
-    mostrarModal('Insertar imagen', 'Ingresa la URL de la imagen:', 'https://ejemplo.com/imagen.png');
+    mostrarModal('Insertar imagen', 'Ingresa la URL o sube una imagen:', 'https://ejemplo.com/imagen.png');
 }
 
 // Insertar video - abre modal
@@ -247,7 +248,6 @@ function insertarVideo(seccionId) {
 
 // Mostrar modal
 function mostrarModal(titulo, label, placeholder) {
-    // Crear modal si no existe
     let modal = document.getElementById('modalInsertar');
     if (!modal) {
         const modalHTML = `
@@ -256,6 +256,11 @@ function mostrarModal(titulo, label, placeholder) {
                     <h3 id="modalTitulo">${titulo}</h3>
                     <label id="modalLabel">${label}</label>
                     <input type="text" id="modalInput" placeholder="${placeholder}">
+                    <div style="text-align:center;margin:10px 0;color:#888;">— O —</div>
+                    <input type="file" id="modalFileInput" accept="image/*" style="width:100%;padding:10px;border:2px dashed #e0e0e0;border-radius:10px;cursor:pointer;">
+                    <div id="modalPreview" style="margin-top:10px;display:none;text-align:center;">
+                        <img id="previewImagen" src="#" alt="Vista previa" style="max-width:100%;max-height:200px;border-radius:8px;">
+                    </div>
                     <div class="modal-botones">
                         <button onclick="confirmarInsercion()" class="btn-aceptar">✅ Insertar</button>
                         <button onclick="cerrarModal()" class="btn-cancelar">❌ Cancelar</button>
@@ -264,21 +269,50 @@ function mostrarModal(titulo, label, placeholder) {
             </div>
         `;
         document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        // Agregar evento para detectar selección de archivo
+        const fileInput = document.getElementById('modalFileInput');
+        if (fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        imagenSubida = event.target.result;
+                        const preview = document.getElementById('modalPreview');
+                        const previewImg = document.getElementById('previewImagen');
+                        previewImg.src = imagenSubida;
+                        preview.style.display = 'block';
+                        document.getElementById('modalInput').value = '';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
     } else {
         document.getElementById('modalTitulo').textContent = titulo;
         document.getElementById('modalLabel').textContent = label;
         document.getElementById('modalInput').placeholder = placeholder;
         document.getElementById('modalInput').value = '';
+        document.getElementById('modalFileInput').value = '';
+        document.getElementById('modalPreview').style.display = 'none';
+        imagenSubida = null;
     }
     document.getElementById('modalInsertar').classList.add('visible');
 }
 
-// Confirmar inserción - inserta imagen o video en el panel
+// Confirmar inserción
 function confirmarInsercion() {
     const input = document.getElementById('modalInput');
     const url = input.value.trim();
-    if (!url) {
-        alert('⚠️ Por favor ingresa una URL válida.');
+    
+    let imagenUrl = url;
+    if (imagenSubida) {
+        imagenUrl = imagenSubida;
+    }
+    
+    if (!imagenUrl) {
+        alert('⚠️ Por favor ingresa una URL o selecciona una imagen de tu dispositivo.');
         return;
     }
 
@@ -289,7 +323,6 @@ function confirmarInsercion() {
         return;
     }
 
-    // Crear un nuevo panel
     const panel = document.createElement('div');
     panel.className = 'panel-editable';
     panel.dataset.id = 'panel-' + Date.now();
@@ -297,17 +330,15 @@ function confirmarInsercion() {
     const contenidoPanel = document.createElement('div');
     contenidoPanel.contentEditable = true;
 
-    // Insertar según el tipo
     if (tipoInsercionModal === 'imagen') {
         contenidoPanel.innerHTML = `
             <div class="imagen-container" style="position:relative;display:inline-block;max-width:100%;">
-                <img src="${url}" alt="Imagen insertada" style="max-width:100%;max-height:400px;border-radius:8px;margin:10px 0;cursor:pointer;">
+                <img src="${imagenUrl}" alt="Imagen insertada" style="max-width:100%;max-height:400px;border-radius:8px;margin:10px 0;cursor:pointer;">
                 <button class="btn-eliminar-imagen" onclick="eliminarImagen(this)" style="position:absolute;top:5px;right:5px;background:rgba(231,76,60,0.9);color:white;border:none;border-radius:50%;width:25px;height:25px;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;justify-content:center;">✕</button>
             </div>
             <p style="font-size:0.8rem;color:#888;margin-top:5px;"><em>Haz clic en la imagen para ajustar su tamaño</em></p>
         `;
         
-        // Agregar evento para redimensionar imagen al hacer clic
         setTimeout(() => {
             const img = panel.querySelector('img');
             if (img) {
@@ -336,7 +367,6 @@ function confirmarInsercion() {
         `;
     }
 
-    // Agregar controles del panel
     const controles = document.createElement('div');
     controles.className = 'panel-controls';
     controles.innerHTML = `
@@ -350,14 +380,12 @@ function confirmarInsercion() {
     panel.appendChild(controles);
     contenedor.appendChild(panel);
 
+    limpiarModal();
     cerrarModal();
     mostrarNotificacion('✅ Contenido insertado correctamente');
-    
-    // Guardar cambios automáticamente
     guardarCambios();
 }
 
-// Eliminar imagen
 function eliminarImagen(btn) {
     if (confirm('¿Eliminar esta imagen?')) {
         const contenedor = btn.closest('.imagen-container');
@@ -366,13 +394,21 @@ function eliminarImagen(btn) {
     }
 }
 
-// Cerrar modal
+function limpiarModal() {
+    document.getElementById('modalInput').value = '';
+    const fileInput = document.getElementById('modalFileInput');
+    if (fileInput) fileInput.value = '';
+    const preview = document.getElementById('modalPreview');
+    if (preview) preview.style.display = 'none';
+    imagenSubida = null;
+}
+
 function cerrarModal() {
     const modal = document.getElementById('modalInsertar');
     if (modal) modal.classList.remove('visible');
+    limpiarModal();
 }
 
-// Agregar panel vacío
 function agregarPanel(seccionId) {
     const contenedor = document.getElementById('contenido-' + seccionId);
     if (!contenedor) {
@@ -624,6 +660,6 @@ console.log('📘 Wiki de Planes de Carrera');
 console.log('💡 Haz clic en cualquier texto para editarlo');
 console.log('💾 Guardar cambios: guarda en el navegador');
 console.log('👁️ Ver Vista Final: muestra los cambios guardados');
-console.log('🖼️ Insertar imagen: pega URL de imagen');
+console.log('🖼️ Insertar imagen: pega URL o sube desde dispositivo');
 console.log('🎬 Insertar video: pega URL de YouTube');
 console.log('📦 Panel: agrega un nuevo panel editable');

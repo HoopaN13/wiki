@@ -386,8 +386,13 @@
 <div id="modalInsertar" class="modal-insertar">
     <div class="modal-contenido">
         <h3 id="modalTitulo">Insertar</h3>
-        <label id="modalLabel">Ingresa la URL:</label>
-        <input type="text" id="modalInput" placeholder="https://ejemplo.com/">
+        <label id="modalLabel">Ingresa la URL o sube una imagen:</label>
+        <input type="text" id="modalInput" placeholder="https://ejemplo.com/imagen.png">
+        <div style="text-align:center;margin:10px 0;color:#888;">— O —</div>
+        <input type="file" id="modalFileInput" accept="image/*" style="width:100%;padding:10px;border:2px dashed #e0e0e0;border-radius:10px;cursor:pointer;">
+        <div id="modalPreview" style="margin-top:10px;display:none;text-align:center;">
+            <img id="previewImagen" src="#" alt="Vista previa" style="max-width:100%;max-height:200px;border-radius:8px;">
+        </div>
         <div class="modal-botones">
             <button onclick="confirmarInsercion()" class="btn-aceptar">✅ Insertar</button>
             <button onclick="cerrarModal()" class="btn-cancelar">❌ Cancelar</button>
