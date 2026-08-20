@@ -264,7 +264,7 @@ section:hover .seccion-botones,
 }
 
 /* ==================== */
-/* PANELES EDITABLES - SIN RECUADROS */
+/* PANELES EDITABLES - CON ESTILO FIJO (NO HEREDAN EL FONDO GLOBAL) */
 /* ==================== */
 .seccion-contenido {
     display: flex;
@@ -289,30 +289,65 @@ section:hover .seccion-botones,
     gap: 20px;
 }
 
+/* ==================== */
+/* ESTILOS FIJOS PARA PANELES - NO HEREDAN EL FONDO GLOBAL */
+/* ==================== */
 .panel-editable {
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    padding: 5px 0;
-    transition: none;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid #e8ecf1 !important;
+    border-radius: 12px !important;
+    padding: 15px 20px !important;
+    margin-bottom: 15px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+    transition: all 0.3s ease;
     position: relative;
 }
 
 .panel-editable:hover {
-    border-color: transparent;
-    box-shadow: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
 }
 
 .panel-editable.dragging {
     opacity: 0.5;
 }
 
+/* ==================== */
+/* TEXTOS DENTRO DE PANELES - COLORES FIJOS */
+/* ==================== */
+.panel-editable h3 {
+    color: #1a4b6e !important;
+    font-weight: 700 !important;
+    margin: 15px 0 10px 0 !important;
+}
+
+.panel-editable p {
+    color: #1a2a3a !important;
+    margin: 10px 0 !important;
+}
+
+.panel-editable ul {
+    padding-left: 25px !important;
+    margin: 10px 0 !important;
+}
+
+.panel-editable ul li {
+    color: #1a2a3a !important;
+    margin-bottom: 8px !important;
+}
+
+.panel-editable strong {
+    color: #0a2f44 !important;
+}
+
+/* ==================== */
+/* CONTROLES DE PANEL */
+/* ==================== */
 .panel-controls {
     display: flex;
     gap: 5px;
     margin-top: 8px;
     padding-top: 8px;
-    border-top: 1px solid rgba(0,0,0,0.06);
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
     flex-wrap: wrap;
 }
 

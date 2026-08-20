@@ -157,6 +157,11 @@ function verVistaFinal() {
 
     let cssPersonalizado = '';
 
+    // ============================================ */
+    // ESTILOS PERSONALIZADOS PARA LA VISTA FINAL
+    // ============================================ */
+
+    // ESTILOS DEL BODY - SOLO APLICA AL BODY
     if (estilosGuardados.body) {
         const s = estilosGuardados.body;
         if (s.background) cssPersonalizado += `body { background: ${s.background} !important; }\n`;
@@ -165,12 +170,51 @@ function verVistaFinal() {
         if (s.fontFamily) cssPersonalizado += `body { font-family: ${s.fontFamily} !important; }\n`;
     }
 
+    // ESTILOS DE PANELES - Independientes del body
+    cssPersonalizado += `
+        /* Los paneles mantienen su propio estilo */
+        .panel-editable {
+            background: rgba(255,255,255,0.95) !important;
+            border: 1px solid #e8ecf1 !important;
+            border-radius: 12px !important;
+            padding: 15px 20px !important;
+            margin-bottom: 15px !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+        }
+        .panel-editable h3 {
+            color: #1a4b6e !important;
+            font-weight: 700 !important;
+            margin: 15px 0 10px 0 !important;
+        }
+        .panel-editable p {
+            color: #1a2a3a !important;
+            margin: 10px 0 !important;
+        }
+        .panel-editable ul {
+            padding-left: 25px !important;
+            margin: 10px 0 !important;
+        }
+        .panel-editable ul li {
+            color: #1a2a3a !important;
+            margin-bottom: 8px !important;
+        }
+        .panel-editable strong {
+            color: #0a2f44 !important;
+        }
+        /* Las secciones NO heredan el fondo del body */
+        section {
+            background: transparent !important;
+        }
+    `;
+
+    // Estilos del header
     if (estilosGuardados.header) {
         const s = estilosGuardados.header;
         if (s.background) cssPersonalizado += `header { background: ${s.background} !important; }\n`;
         if (s.color) cssPersonalizado += `header { color: ${s.color} !important; }\n`;
     }
 
+    // Estilos de cada sección - cada una con su color individual
     const secciones = ['plan-carrera', 'sucesion', 'movilidad', 'talento-humano', 'recursos', 'estadisticas'];
     secciones.forEach(id => {
         if (estilosGuardados[id]) {
@@ -181,8 +225,33 @@ function verVistaFinal() {
             if (s.fontFamily) cssPersonalizado += `#${id} { font-family: ${s.fontFamily} !important; }\n`;
             if (s.color) cssPersonalizado += `#${id} * { color: ${s.color} !important; }\n`;
             if (s.fontSize) cssPersonalizado += `#${id} * { font-size: ${s.fontSize} !important; }\n`;
+            if (s.fontFamily) cssPersonalizado += `#${id} * { font-family: ${s.fontFamily} !important; }\n`;
         }
     });
+
+    // Estilos base para legibilidad - asegura que los títulos no se vuelvan rojos
+    cssPersonalizado += `
+        section h2 { 
+            color: #0a2f44 !important; 
+            font-family: 'Playfair Display', serif !important;
+        }
+        section h3 { 
+            color: #1a4b6e !important; 
+        }
+        section p { 
+            color: #1a2a3a !important; 
+        }
+        section ul li { 
+            color: #1a2a3a !important; 
+        }
+        /* Los títulos de los paneles NO se vuelven rojos */
+        .panel-editable h3 {
+            color: #1a4b6e !important;
+        }
+        .panel-editable h2 {
+            color: #0a2f44 !important;
+        }
+    `;
 
     const vistaFinal = `<!DOCTYPE html>
 <html lang="es">
@@ -250,7 +319,6 @@ let imagenSubida = null;
 
 // Insertar imagen - abre modal
 function insertarImagen(seccionId) {
-    // ⛔ SI ESTAMOS EN VISTA FINAL, NO HACER NADA
     if (document.body.classList.contains('vista-final')) {
         return;
     }
@@ -261,7 +329,6 @@ function insertarImagen(seccionId) {
 
 // Insertar video - abre modal
 function insertarVideo(seccionId) {
-    // ⛔ SI ESTAMOS EN VISTA FINAL, NO HACER NADA
     if (document.body.classList.contains('vista-final')) {
         return;
     }
@@ -272,7 +339,6 @@ function insertarVideo(seccionId) {
 
 // Mostrar modal
 function mostrarModal(titulo, label, placeholder) {
-    // ⛔ SI ESTAMOS EN VISTA FINAL, NO CREAR EL MODAL
     if (document.body.classList.contains('vista-final')) {
         return;
     }
@@ -622,7 +688,8 @@ function rgbToHex(rgb) {
 function aplicarColorFondo() {
     const color = document.getElementById('colorFondo').value;
     document.getElementById('colorFondoText').value = color;
-    aplicarEstilo('background', color);
+    // Solo aplicar al body, los paneles tienen su propio fondo fijo en CSS
+    document.body.style.background = color;
 }
 
 function aplicarColorTexto() {
@@ -642,6 +709,9 @@ function aplicarTipoFuente() {
     aplicarEstilo('font-family', font);
 }
 
+// ==================== */
+// FUNCIÓN APLICAR ESTILO - CORREGIDA
+// ==================== */
 function aplicarEstilo(propiedad, valor) {
     let elemento;
     if (seccionActual === 'global') {
@@ -653,25 +723,36 @@ function aplicarEstilo(propiedad, valor) {
     }
 
     if (!elemento) return;
+    
+    // Si es el color de fondo global, solo aplicar al body
+    // Los paneles ya tienen su propio fondo fijo en CSS
+    if (seccionActual === 'global' && propiedad === 'background') {
+        elemento.style.background = valor;
+        return;
+    }
+    
     elemento.style[propiedad] = valor;
 }
 
+// ==================== */
+// RESETEAR ESTILOS - CORREGIDO
+// ==================== */
 function resetearEstilos() {
     if (!confirm('¿Resetear todos los estilos personalizados?')) return;
 
-    const elementos = [document.body, document.querySelector('header')];
-    ['plan-carrera', 'sucesion', 'movilidad', 'talento-humano', 'recursos', 'estadisticas'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) elementos.push(el);
-    });
+    // Solo resetear el body y header, NO los paneles
+    document.body.style.background = '';
+    document.body.style.color = '';
+    document.body.style.fontSize = '';
+    document.body.style.fontFamily = '';
 
-    elementos.forEach(el => {
-        el.style.background = '';
-        el.style.color = '';
-        el.style.fontSize = '';
-        el.style.fontFamily = '';
-    });
+    const header = document.querySelector('header');
+    if (header) {
+        header.style.background = '';
+        header.style.color = '';
+    }
 
+    // Resetear controles
     document.getElementById('colorFondo').value = '#ffffff';
     document.getElementById('colorFondoText').value = '#ffffff';
     document.getElementById('colorTexto').value = '#1a2a3a';
