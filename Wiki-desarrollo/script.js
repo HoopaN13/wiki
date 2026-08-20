@@ -130,6 +130,19 @@ function verVistaFinal() {
             return match;
         });
 
+    // ⛔ ELIMINAR EL MODAL Y TODO SU CONTENIDO DE LA VISTA FINAL
+    contenidoBody = contenidoBody.replace(/<div id="modalInsertar"[^>]*>[\s\S]*?<\/div>/gi, '');
+    contenidoBody = contenidoBody.replace(/<button[^>]*onclick="confirmarInsercion"[^>]*>[\s\S]*?<\/button>/gi, '');
+    contenidoBody = contenidoBody.replace(/<button[^>]*onclick="cerrarModal"[^>]*>[\s\S]*?<\/button>/gi, '');
+    contenidoBody = contenidoBody.replace(/<input[^>]*id="modalFileInput"[^>]*>/gi, '');
+    contenidoBody = contenidoBody.replace(/<input[^>]*id="modalInput"[^>]*>/gi, '');
+    contenidoBody = contenidoBody.replace(/<div[^>]*id="modalPreview"[^>]*>[\s\S]*?<\/div>/gi, '');
+    contenidoBody = contenidoBody.replace(/<label[^>]*id="modalLabel"[^>]*>[\s\S]*?<\/label>/gi, '');
+    contenidoBody = contenidoBody.replace(/<h3[^>]*id="modalTitulo"[^>]*>[\s\S]*?<\/h3>/gi, '');
+    contenidoBody = contenidoBody.replace(/<div[^>]*class="modal-botones"[^>]*>[\s\S]*?<\/div>/gi, '');
+    contenidoBody = contenidoBody.replace(/<div[^>]*class="modal-contenido"[^>]*>[\s\S]*?<\/div>/gi, '');
+    contenidoBody = contenidoBody.replace(/<div[^>]*style="text-align:center;margin:10px 0;color:#888;"[^>]*>[\s\S]*?<\/div>/gi, '');
+
     const footerMatch = contenidoBody.match(/<footer>([\s\S]*?)<\/footer>/i);
     if (footerMatch) {
         let footerContent = footerMatch[1];
@@ -195,6 +208,9 @@ function verVistaFinal() {
         .overlay-oscuro, .notificacion-flotante {
             display: none !important;
         }
+        .modal-insertar {
+            display: none !important;
+        }
         ${estilos}
         ${cssPersonalizado}
     </style>
@@ -234,6 +250,10 @@ let imagenSubida = null;
 
 // Insertar imagen - abre modal
 function insertarImagen(seccionId) {
+    // ⛔ SI ESTAMOS EN VISTA FINAL, NO HACER NADA
+    if (document.body.classList.contains('vista-final')) {
+        return;
+    }
     seccionActualModal = seccionId;
     tipoInsercionModal = 'imagen';
     mostrarModal('Insertar imagen', 'Ingresa la URL o sube una imagen:', 'https://ejemplo.com/imagen.png');
@@ -241,6 +261,10 @@ function insertarImagen(seccionId) {
 
 // Insertar video - abre modal
 function insertarVideo(seccionId) {
+    // ⛔ SI ESTAMOS EN VISTA FINAL, NO HACER NADA
+    if (document.body.classList.contains('vista-final')) {
+        return;
+    }
     seccionActualModal = seccionId;
     tipoInsercionModal = 'video';
     mostrarModal('Insertar video', 'Ingresa la URL de YouTube:', 'https://www.youtube.com/watch?v=VIDEO_ID');
@@ -248,6 +272,11 @@ function insertarVideo(seccionId) {
 
 // Mostrar modal
 function mostrarModal(titulo, label, placeholder) {
+    // ⛔ SI ESTAMOS EN VISTA FINAL, NO CREAR EL MODAL
+    if (document.body.classList.contains('vista-final')) {
+        return;
+    }
+    
     let modal = document.getElementById('modalInsertar');
     if (!modal) {
         const modalHTML = `
@@ -257,7 +286,7 @@ function mostrarModal(titulo, label, placeholder) {
                     <label id="modalLabel">${label}</label>
                     <input type="text" id="modalInput" placeholder="${placeholder}">
                     <div style="text-align:center;margin:10px 0;color:#888;">— O —</div>
-                    <input type="file" id="modalFileInput" accept="image/*" style="width:100%;padding:10px;border:2px dashed #e0e0e0;border-radius:10px;cursor:pointer;">
+                    <input type="file" id="modalFileInput" accept="image/*" style="width:100%;padding:10px;border:2px dashed #e0e0e0;border-radius:10px;cursor:pointer;" data-no-file-label="">
                     <div id="modalPreview" style="margin-top:10px;display:none;text-align:center;">
                         <img id="previewImagen" src="#" alt="Vista previa" style="max-width:100%;max-height:200px;border-radius:8px;">
                     </div>
@@ -270,7 +299,6 @@ function mostrarModal(titulo, label, placeholder) {
         `;
         document.body.insertAdjacentHTML('beforeend', modalHTML);
         
-        // Agregar evento para detectar selección de archivo
         const fileInput = document.getElementById('modalFileInput');
         if (fileInput) {
             fileInput.addEventListener('change', function(e) {
