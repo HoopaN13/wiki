@@ -1,4 +1,20 @@
 // ==================== */
+// CONFIGURACIÓN DE FIREBASE - REEMPLAZA CON TUS DATOS
+// ==================== */
+
+// 🔥 REEMPLAZA ESTOS VALORES CON LOS QUE COPASTE DE FIREBASE
+const firebaseConfig = {
+  apiKey: "AIzaSyD7aTvP0R7n8AoqjBLeZmcIFg8njajokM",
+  authDomain: "wiki-desarrollo.firebaseapp.com",
+  projectId: "wiki-desarrollo",
+  storageBucket: "wiki-desarrollo.firebasestorage.app",
+  messagingSenderId: "924009154077",
+  appId: "1:924009154077:web:e619808bc7093578b528f4",
+  measurementId: "G-DP3Y8TRFV1"
+};
+
+
+// ==================== */
 // NOTIFICACIONES
 // ==================== */
 
