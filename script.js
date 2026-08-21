@@ -551,9 +551,9 @@ function verVistaFinal() {
         }
         
         .edit-notice, .save-button, .btn-abrir-panel, .panel-personalizacion,
-.seccion-botones, .panel-controls, .btn-insertar, .btn-vista-final {
-    display: none !important;
-}
+        .seccion-botones, .panel-controls, .btn-insertar, .btn-vista-final {
+            display: none !important;
+        }
         
         [contenteditable="true"] {
             outline: none !important;

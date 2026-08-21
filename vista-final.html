@@ -4,256 +4,473 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wiki: Planes de Carrera - Vista Final</title>
-    <link rel="stylesheet" href="style-final.css">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8eeff 50%, #f5f0ff 100%);
+            color: #1a2a3a;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 50%, #0a1a2e 100%);
+            color: white;
+            padding: 40px 50px;
+            border-radius: 20px;
+            margin-bottom: 35px;
+            text-align: center;
+            box-shadow: 0 15px 50px rgba(15, 52, 96, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.85;
+            position: relative;
+            z-index: 1;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+        
+        nav {
+            margin-top: 25px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        nav ul li a {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 22px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+        }
+        
+        nav ul li a:hover {
+            background: rgba(255, 215, 0, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.15);
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+        
+        main section {
+            background: #ffffff;
+            padding: 35px 40px;
+            margin-bottom: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+        
+        main section h2 {
+            font-family: 'Playfair Display', serif;
+            color: #1a1a2e;
+            font-size: 2rem;
+            border-bottom: 4px solid #ffd700;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+        
+        main section h3 {
+            color: #0f3460;
+            font-weight: 700;
+            margin: 25px 0 12px 0;
+            font-size: 1.2rem;
+        }
+        
+        main section ul {
+            padding-left: 25px;
+            margin: 10px 0;
+        }
+        
+        main section ul li {
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+        
+        table th {
+            background: linear-gradient(135deg, #1a1a2e, #0f3460);
+            color: white;
+            padding: 14px 20px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        table td {
+            padding: 14px 20px;
+            border-bottom: 1px solid #eef2f7;
+        }
+        
+        table tr:nth-child(even) {
+            background: #f8faff;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #1a1a2e, #0f3460);
+            color: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        footer p {
+            opacity: 0.8;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-volver {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffd700, #f5a623);
+            color: #1a1a2e !important;
+            padding: 14px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.05rem;
+            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.35);
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-volver:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(255, 215, 0, 0.5);
+        }
+        
+        /* Ocultar elementos de edición */
         .edit-notice, .save-button, .btn-abrir-panel, .panel-personalizacion,
-        .seccion-botones, .panel-controls, .btn-insertar {
+        .seccion-botones, .panel-controls, .btn-insertar, .btn-vista-final {
             display: none !important;
         }
+        
         [contenteditable="true"] {
             outline: none !important;
             background: transparent !important;
+            cursor: default !important;
         }
         [contenteditable="true"]:hover,
         [contenteditable="true"]:focus {
             outline: none !important;
             background: transparent !important;
+            cursor: default !important;
         }
+        
         .overlay-oscuro, .notificacion-flotante {
             display: none !important;
         }
         .modal-insertar {
             display: none !important;
         }
+        
+        /* Estilos para paneles */
+        .panel-editable {
+            background: #ffffff !important;
+            border: 1px solid #e8ecf1 !important;
+            border-radius: 16px !important;
+            padding: 22px 25px !important;
+            margin-bottom: 20px !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+        }
+        
+        .panel-editable h2 {
+            color: #0a2f44 !important;
+            font-family: 'Playfair Display', serif !important;
+            font-size: 1.8rem !important;
+            border-bottom: 3px solid rgba(10, 47, 68, 0.10) !important;
+            padding-bottom: 10px !important;
+            margin-bottom: 15px !important;
+        }
+        
+        .panel-editable h3 {
+            color: #1a4b6e !important;
+            font-weight: 700 !important;
+            margin: 18px 0 10px 0 !important;
+            font-size: 1.2rem !important;
+        }
+        
+        .panel-editable p {
+            color: #1a2a3a !important;
+            margin: 10px 0 !important;
+            font-size: 1rem !important;
+            line-height: 1.7 !important;
+        }
+        
+        .panel-editable ul {
+            padding-left: 25px !important;
+            margin: 10px 0 !important;
+        }
+        
+        .panel-editable ul li {
+            color: #1a2a3a !important;
+            margin-bottom: 8px !important;
+            font-size: 1rem !important;
+        }
+        
+        .panel-editable strong {
+            color: #0a2f44 !important;
+            font-weight: 700 !important;
+        }
+        
+        /* Estilos para imágenes de fondo en paneles */
+        .panel-editable[style*="background-image"] {
+            border-radius: 16px !important;
+            border: 1px solid rgba(255,255,255,0.3) !important;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15) !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+            position: relative !important;
+            min-height: 380px !important;
+        }
+        
+        .panel-editable[style*="background-image"] .panel-overlay {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background: linear-gradient(135deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.15) 100%) !important;
+            z-index: 1 !important;
+            border-radius: 16px !important;
+            pointer-events: none !important;
+        }
+        
+        .panel-editable[style*="background-image"] > div:not(.panel-overlay):not(.panel-controls) {
+            position: relative !important;
+            z-index: 2 !important;
+            color: #ffffff !important;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.6), 0 0 40px rgba(0,0,0,0.3) !important;
+            padding: 40px 35px !important;
+            min-height: 320px !important;
+            background: transparent !important;
+            border-radius: 16px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+        }
+        
+        .panel-editable[style*="background-image"] h2,
+        .panel-editable[style*="background-image"] h3,
+        .panel-editable[style*="background-image"] p,
+        .panel-editable[style*="background-image"] ul li,
+        .panel-editable[style*="background-image"] li,
+        .panel-editable[style*="background-image"] strong,
+        .panel-editable[style*="background-image"] em {
+            color: #ffffff !important;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.6), 0 0 40px rgba(0,0,0,0.3) !important;
+        }
+        
+        .panel-editable[style*="background-image"] h2 {
+            border-bottom: 2px solid rgba(255,255,255,0.2) !important;
+            font-family: 'Playfair Display', serif !important;
+            font-size: 1.8rem !important;
+            padding-bottom: 12px !important;
+            margin-bottom: 16px !important;
+        }
+        
+        @media (max-width: 700px) {
+            header {
+                padding: 25px 20px;
+            }
+            header h1 {
+                font-size: 1.8rem;
+            }
+            main section {
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 <body class="vista-final">
-    <header>
-        <div class="header-content">
-            <h1>📘 Planes de Carrera como Oportunidad de Desarrollo Organizacional</h1>
-            <p>Wiki colaborativa - Equipo de Psicología Organizacional</p>
+    <div id="contenido-principal">
+        <!-- El contenido se cargará desde localStorage -->
+        <div style="text-align:center;padding:50px;color:#888;">
+            <p>Cargando vista final...</p>
+            <div style="margin-top:20px;width:40px;height:40px;border:4px solid #f0f4ff;border-top-color:#0f3460;border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;"></div>
+            <style>
+                @keyframes spin {
+                    to { transform: rotate(360deg); }
+                }
+            </style>
         </div>
-        <nav>
-            <ul>
-                <li><a href="#plan-carrera">📌 Plan de Carrera</a></li>
-                <li><a href="#sucesion">🔄 Programas de Sucesión</a></li>
-                <li><a href="#movilidad">🌍 Movilidad</a></li>
-                <li><a href="#talento-humano">🧠 Talento Humano</a></li>
-                <li><a href="#recursos">📚 Recursos</a></li>
-                <li><a href="#estadisticas">📊 Estadísticas</a></li>
-            </ul>
-        </nav>
-    </header>
+    </div>
 
-    <main>
-        <!-- SECCIÓN 1: PLAN DE CARRERA -->
-        <section id="plan-carrera" class="fade-in">
-            <h2>📌 Plan de Carrera</h2>
-            <div>
-                <p>El <strong>plan de carrera</strong> es una herramienta estratégica que permite a los colaboradores visualizar su crecimiento dentro de la organización.</p>
-                
-                <h3>📖 Definición</h3>
-                <p>Ruta de crecimiento profesional dentro de una empresa que incluye:</p>
-                <ul>
-                    <li>Identificación de metas profesionales</li>
-                    <li>Evaluación de competencias actuales</li>
-                    <li>Diseño de plan de desarrollo</li>
-                    <li>Seguimiento y retroalimentación</li>
-                </ul>
-
-                <h3>⭐ Importancia</h3>
-                <ul>
-                    <li><strong>Motivación:</strong> Los empleados se sienten valorados</li>
-                    <li><strong>Retención:</strong> Reduce la rotación de personal</li>
-                    <li><strong>Productividad:</strong> Colaboradores más comprometidos</li>
-                </ul>
-
-                <div class="card-ejemplo">
-                    <h4>📋 Ejemplo práctico</h4>
-                    <p>Una psicóloga organizacional puede seguir esta ruta:</p>
-                    <div class="ruta-carrera">
-                        <div class="nivel">Nivel 1<br><span>Asistente de RH</span></div>
-                        <div class="flecha">→</div>
-                        <div class="nivel">Nivel 2<br><span>Coordinadora de Talento Humano</span></div>
-                        <div class="flecha">→</div>
-                        <div class="nivel">Nivel 3<br><span>Directora de Desarrollo Organizacional</span></div>
+    <script>
+        // ==================== */
+        // CARGAR VISTA FINAL DESDE LOCALSTORAGE
+        // ==================== */
+        
+        function cargarVistaFinal() {
+            const contenidoGuardado = localStorage.getItem('wiki-contenido');
+            
+            if (!contenidoGuardado) {
+                document.getElementById('contenido-principal').innerHTML = `
+                    <div style="text-align:center;padding:80px 20px;color:#666;">
+                        <h2 style="color:#e74c3c;margin-bottom:20px;">⚠️ No hay contenido guardado</h2>
+                        <p style="margin-bottom:30px;">Primero debes editar y guardar el contenido en la página de edición.</p>
+                        <a href="index.html" class="btn-volver">✏️ Ir a la página de edición</a>
                     </div>
-                </div>
-            </div>
-        </section>
+                `;
+                return;
+            }
 
-        <!-- SECCIÓN 2: PROGRAMAS DE SUCESIÓN -->
-        <section id="sucesion" class="fade-in">
-            <h2>🔄 Programas de Sucesión y Promoción de Cargos</h2>
-            <div>
-                <p>Los <strong>programas de sucesión</strong> aseguran que haya talento preparado para ocupar posiciones clave.</p>
-                
-                <h3>🎯 Objetivos</h3>
-                <ul>
-                    <li>Identificar empleados con alto potencial</li>
-                    <li>Preparar líderes para el futuro</li>
-                    <li>Garantizar continuidad operativa</li>
-                </ul>
+            // Extraer solo el body del contenido guardado
+            const bodyMatch = contenidoGuardado.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+            let contenidoBody = bodyMatch ? bodyMatch[1] : '';
 
-                <h3>✅ Beneficios</h3>
-                <ul>
-                    <li>Reducción de riesgos por vacantes</li>
-                    <li>Desarrollo interno de talento</li>
-                    <li>Cultura de crecimiento profesional</li>
-                </ul>
+            // Eliminar contenteditable
+            contenidoBody = contenidoBody.replace(/contenteditable="true"/gi, '');
+            contenidoBody = contenidoBody.replace(/contenteditable='true'/gi, '');
 
-                <div class="card-info">
-                    <h4>🏢 Empresas con programas de sucesión exitosos</h4>
-                    <ul>
-                        <li><strong>IBM:</strong> Programa de liderazgo de 3 años</li>
-                        <li><strong>Nestlé:</strong> Plan de sucesión para gerentes</li>
-                        <li><strong>BBVA:</strong> Desarrollo de talento joven</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
+            // ✅ ELIMINAR TODOS LOS ELEMENTOS DE EDICIÓN
+            contenidoBody = contenidoBody
+                .replace(/<div[^>]*class="edit-notice"[^>]*>[\s\S]*?<\/div>/gi, '')
+                .replace(/<div[^>]*class="seccion-botones"[^>]*>[\s\S]*?<\/div>/gi, '')
+                .replace(/<div[^>]*class="panel-controls"[^>]*>[\s\S]*?<\/div>/gi, '')
+                .replace(/<button[^>]*class="btn-insertar"[^>]*>[\s\S]*?<\/button>/gi, '')
+                .replace(/<button[^>]*onclick="insertarImagen[^>]*>[\s\S]*?<\/button>/gi, '')
+                .replace(/<button[^>]*onclick="insertarVideo[^>]*>[\s\S]*?<\/button>/gi, '')
+                .replace(/<button[^>]*onclick="agregarPanel[^>]*>[\s\S]*?<\/button>/gi, '')
+                .replace(/<button[^>]*onclick="cambiarLayout[^>]*>[\s\S]*?<\/button>/gi, '')
+                .replace(/<div[^>]*class="save-button"[^>]*>[\s\S]*?<\/div>/gi, '')
+                .replace(/<div[^>]*id="panelPersonalizacion"[^>]*>[\s\S]*?<\/div>/gi, '')
+                .replace(/<button[^>]*id="btnAbrirPanel"[^>]*>[\s\S]*?<\/button>/gi, '')
+                .replace(/<button[^>]*class="btn-abrir-panel"[^>]*>[\s\S]*?<\/button>/gi, '')
+                .replace(/<button[^>]*class="btn-vista-final"[^>]*>[\s\S]*?<\/button>/gi, '')
+                .replace(/<button[^>]*onclick="verVistaFinal\(\)"[^>]*>[\s\S]*?<\/button>/gi, '')
+                .replace(/<div id="modalInsertar"[^>]*>[\s\S]*?<\/div>/gi, '')
+                .replace(/<div id="modalVideo"[^>]*>[\s\S]*?<\/div>/gi, '');
 
-        <!-- SECCIÓN 3: MOVILIDAD -->
-        <section id="movilidad" class="fade-in">
-            <h2>🌍 Movilidad Interna y Externa</h2>
-            <div>
-                <p>La <strong>movilidad</strong> permite a los empleados expandir sus horizontes profesionales.</p>
+            // Insertar el contenido limpio
+            document.getElementById('contenido-principal').innerHTML = contenidoBody;
 
-                <div class="grid-2">
-                    <div class="card-movilidad">
-                        <h3>🏢 Movilidad Interna</h3>
-                        <ul>
-                            <li><strong>Definición:</strong> Cambios dentro de la misma organización</li>
-                            <li><strong>Tipos:</strong> Ascensos, traslados, rotación</li>
-                            <li><strong>Ejemplo:</strong> Analista → Gerente</li>
-                        </ul>
-                    </div>
-                    <div class="card-movilidad">
-                        <h3>🌐 Movilidad Externa</h3>
-                        <ul>
-                            <li><strong>Definición:</strong> Experiencias fuera de la organización</li>
-                            <li><strong>Tipos:</strong> Intercambios, estudios, prácticas</li>
-                            <li><strong>Ejemplo:</strong> Máster en el extranjero</li>
-                        </ul>
-                    </div>
-                </div>
+            // ✅ RESTAURAR IMÁGENES DE FONDO
+            document.querySelectorAll('.panel-editable[data-imagen-fondo]').forEach(panel => {
+                const imgData = panel.getAttribute('data-imagen-fondo');
+                if (imgData && imgData.startsWith('data:image')) {
+                    panel.style.backgroundImage = `url(${imgData})`;
+                    panel.style.backgroundSize = 'cover';
+                    panel.style.backgroundPosition = 'center';
+                    panel.style.backgroundRepeat = 'no-repeat';
+                    panel.style.minHeight = '380px';
+                    panel.style.borderRadius = '16px';
+                    panel.style.border = '1px solid rgba(255,255,255,0.3)';
+                    panel.style.boxShadow = '0 8px 32px rgba(0,0,0,0.15)';
+                    panel.style.padding = '0';
+                    panel.style.overflow = 'hidden';
+                    panel.style.position = 'relative';
+                    panel.style.backgroundColor = 'transparent';
+                    
+                    // Crear overlay si no existe
+                    if (!panel.querySelector('.panel-overlay')) {
+                        const overlay = document.createElement('div');
+                        overlay.className = 'panel-overlay';
+                        overlay.style.cssText = `
+                            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+                            background: linear-gradient(135deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.15) 100%);
+                            z-index: 1; border-radius: 16px; pointer-events: none;
+                        `;
+                        panel.prepend(overlay);
+                    }
+                    
+                    // Estilos del contenido dentro del panel
+                    const contenidoPanel = panel.querySelector('div:not(.panel-overlay):not(.panel-controls)');
+                    if (contenidoPanel) {
+                        contenidoPanel.style.cssText = `
+                            position: relative; z-index: 2; color: #ffffff;
+                            text-shadow: 0 2px 20px rgba(0,0,0,0.6), 0 0 40px rgba(0,0,0,0.3);
+                            padding: 40px 35px; min-height: 320px; background: transparent;
+                            border-radius: 16px; display: flex; flex-direction: column; justify-content: center;
+                        `;
+                        const textos = contenidoPanel.querySelectorAll('*');
+                        textos.forEach(el => {
+                            el.style.color = '#ffffff';
+                            el.style.textShadow = '0 2px 20px rgba(0,0,0,0.6), 0 0 40px rgba(0,0,0,0.3)';
+                        });
+                        const titulos = contenidoPanel.querySelectorAll('h2, h3');
+                        titulos.forEach(el => {
+                            el.style.borderBottomColor = 'rgba(255,255,255,0.2)';
+                        });
+                    }
+                }
+            });
 
-                <div class="card-table">
-                    <h3>📊 Comparativa</h3>
-                    <table>
-                        <tr>
-                            <th>Aspecto</th>
-                            <th>Movilidad Interna</th>
-                            <th>Movilidad Externa</th>
-                        </tr>
-                        <tr>
-                            <td>⏱️ Tiempo</td>
-                            <td>1-3 años</td>
-                            <td>3-6 meses</td>
-                        </tr>
-                        <tr>
-                            <td>📚 Conocimiento</td>
-                            <td>Profundiza en la empresa</td>
-                            <td>Amplía perspectivas</td>
-                        </tr>
-                        <tr>
-                            <td>⚠️ Riesgo</td>
-                            <td>Menor incertidumbre</td>
-                            <td>Mayor adaptación</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </section>
+            // ✅ RECONECTAR ENLACES DEL NAV
+            document.querySelectorAll('nav a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').replace('#', '');
+                    const target = document.getElementById(targetId);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
 
-        <!-- SECCIÓN 4: TALENTO HUMANO -->
-        <section id="talento-humano" class="fade-in">
-            <h2>🧠 Aportes del Talento Humano</h2>
-            <div>
-                <p>El <strong>área de Talento Humano</strong> es clave para diseñar e implementar los planes de carrera.</p>
+            // ✅ AGREGAR INDICADOR DE VISTA FINAL EN EL HEADER
+            const header = document.querySelector('header');
+            if (header && !header.innerHTML.includes('Vista Final - Solo Lectura')) {
+                const indicador = document.createElement('div');
+                indicador.style.cssText = `
+                    background: rgba(255,215,0,0.15);
+                    padding: 8px 20px;
+                    border-radius: 30px;
+                    display: inline-block;
+                    margin-top: 10px;
+                    border: 1px solid rgba(255,215,0,0.2);
+                    font-size: 0.8rem;
+                    color: #ffd700;
+                `;
+                indicador.textContent = '👁️ Vista Final - Solo Lectura';
+                header.appendChild(indicador);
+            }
+        }
 
-                <h3>🔧 Funciones clave</h3>
-                <div class="grid-4">
-                    <div class="funcion">
-                        <span class="emoji-grande">📊</span>
-                        <h4>Diagnóstico</h4>
-                        <p>Evaluación de competencias</p>
-                    </div>
-                    <div class="funcion">
-                        <span class="emoji-grande">✏️</span>
-                        <h4>Diseño</h4>
-                        <p>Creación de rutas formativas</p>
-                    </div>
-                    <div class="funcion">
-                        <span class="emoji-grande">📚</span>
-                        <h4>Implementación</h4>
-                        <p>Capacitación continua</p>
-                    </div>
-                    <div class="funcion">
-                        <span class="emoji-grande">📈</span>
-                        <h4>Monitoreo</h4>
-                        <p>Seguimiento y feedback</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECCIÓN 5: ESTADÍSTICAS -->
-        <section id="estadisticas" class="fade-in">
-            <h2>📊 Estadísticas y Datos</h2>
-            <div>
-                <p>Datos importantes sobre planes de carrera en organizaciones:</p>
-                
-                <div class="grid-3">
-                    <div class="card-estadistica">
-                        <span class="numero">85%</span>
-                        <p>Empresas con plan de carrera</p>
-                    </div>
-                    <div class="card-estadistica">
-                        <span class="numero">30%</span>
-                        <p>Reducción en rotación</p>
-                    </div>
-                    <div class="card-estadistica">
-                        <span class="numero">70%</span>
-                        <p>Empleados valoran crecimiento</p>
-                    </div>
-                </div>
-
-                <div class="card-table">
-                    <h3>📈 Evolución de retención</h3>
-                    <table>
-                        <tr>
-                            <th>Año</th>
-                            <th>Sin plan</th>
-                            <th>Con plan</th>
-                        </tr>
-                        <tr><td>2022</td><td>60%</td><td>85%</td></tr>
-                        <tr><td>2023</td><td>65%</td><td>90%</td></tr>
-                        <tr><td>2024</td><td>70%</td><td>92%</td></tr>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECCIÓN 6: RECURSOS -->
-        <section id="recursos" class="fade-in">
-            <h2>📚 Recursos y Referencias</h2>
-            <div>
-                <ul>
-                    <li>📄 "Relaciones intergeneracionales en el mundo del trabajo" (1980-2007)</li>
-                    <li>📄 "Centennials: razones para tener un plan de carrera"</li>
-                    <li>📊 <a href="#">Estudio sobre retención de talento (PDF)</a></li>
-                    <li>🎥 <a href="#">Video: Importancia del plan de carrera</a></li>
-                </ul>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <p>📅 Wiki colaborativa - Equipo de Psicología Organizacional | 2026</p>
-        <div style="margin-top: 15px;">
-            <a href="index.html" class="btn-volver">✏️ Volver al modo edición</a>
-        </div>
-    </footer>
+        // Ejecutar al cargar la página
+        document.addEventListener('DOMContentLoaded', cargarVistaFinal);
+    </script>
 </body>
 </html>
