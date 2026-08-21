@@ -403,9 +403,6 @@
 <!-- ==================== -->
 <footer>
     <p contenteditable="true">📅 Wiki colaborativa - Equipo de Psicología Organizacional | 2026</p>
-    <div style="margin-top:15px;">
-        <button onclick="verVistaFinal()" class="btn-vista-final" style="border:none;cursor:pointer;font-size:1.05rem;">✨ Ver Vista Final (Solo Lectura)</button>
-    </div>
 </footer>
 
 <!-- ==================== -->
@@ -444,11 +441,31 @@
 <script src="script.js"></script>
 <script>
     window.addEventListener('load', function() {
-        const contenidoGuardado = localStorage.getItem('wiki-contenido');
-        if (contenidoGuardado) {
-            console.log('📂 Hay cambios guardados. Fecha: ' + localStorage.getItem('wiki-fecha'));
+        // ✅ VERIFICAR MODO RESET
+        const isReset = sessionStorage.getItem('resetEnProgreso');
+        if (isReset) {
+            sessionStorage.removeItem('resetEnProgreso');
+            console.log('🔄 Reset completo - cargando página original');
             
-            // Restaurar imágenes de fondo al cargar la página
+            if (window.intervaloAutoGuardar) {
+                clearInterval(window.intervaloAutoGuardar);
+            }
+            window.intervaloAutoGuardar = setInterval(autoGuardar, 5000);
+            return;
+        }
+        
+        // ✅ Cargar contenido guardado
+        const contenidoGuardado = localStorage.getItem('wiki-contenido');
+        if (contenidoGuardado && contenidoGuardado.length > 0) {
+            console.log('📂 Cargando contenido guardado. Fecha: ' + localStorage.getItem('wiki-fecha'));
+            
+            const bodyMatch = contenidoGuardado.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+            if (bodyMatch) {
+                const nuevoBody = bodyMatch[1];
+                document.body.innerHTML = nuevoBody;
+            }
+            
+            // ✅ Restaurar imágenes de fondo
             document.querySelectorAll('.panel-editable[data-imagen-fondo]').forEach(panel => {
                 const imgData = panel.getAttribute('data-imagen-fondo');
                 if (imgData && imgData.startsWith('data:image')) {
@@ -465,7 +482,6 @@
                     panel.style.position = 'relative';
                     panel.style.backgroundColor = 'transparent';
                     
-                    // Recrear overlay si no existe
                     if (!panel.querySelector('.panel-overlay')) {
                         const overlay = document.createElement('div');
                         overlay.className = 'panel-overlay';
@@ -481,7 +497,6 @@
                         panel.prepend(overlay);
                     }
                     
-                    // Restaurar estilos del contenido
                     const contenidoPanel = panel.querySelector('div:not(.panel-overlay):not(.panel-controls)');
                     if (contenidoPanel) {
                         contenidoPanel.style.position = 'relative';
@@ -512,6 +527,25 @@
                 }
             });
         }
+        
+        // ✅ RESTAURAR ESTILOS PERSONALIZADOS
+        restaurarEstilosPersonalizados();
+        
+        // ✅ CERRAR EL PANEL DE PERSONALIZACIÓN SIEMPRE
+        const panelPersonalizacion = document.getElementById('panelPersonalizacion');
+        const btnAbrirPanel = document.getElementById('btnAbrirPanel');
+        if (panelPersonalizacion) {
+            panelPersonalizacion.classList.remove('abierto');
+        }
+        if (btnAbrirPanel) {
+            btnAbrirPanel.classList.remove('oculto');
+        }
+        
+        // ✅ Asegurar auto-guardado
+        if (window.intervaloAutoGuardar) {
+            clearInterval(window.intervaloAutoGuardar);
+        }
+        window.intervaloAutoGuardar = setInterval(autoGuardar, 5000);
         console.log('💾 Auto-guardado activado cada 5 segundos');
     });
 </script>

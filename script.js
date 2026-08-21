@@ -54,12 +54,20 @@ function guardarCambios() {
         }
     });
 
-    const contenido = document.documentElement.outerHTML;
+    // GUARDAR ESTILOS DEL BODY
+    guardarEstilosPersonalizados();
+
+    // GUARDAR EL CONTENIDO SIN MODALES
+    const clone = document.documentElement.cloneNode(true);
+    
+    const modalVideoClone = clone.querySelector('#modalVideo');
+    const modalInsertarClone = clone.querySelector('#modalInsertar');
+    if (modalVideoClone) modalVideoClone.remove();
+    if (modalInsertarClone) modalInsertarClone.remove();
+    
+    const contenido = clone.outerHTML;
     localStorage.setItem('wiki-contenido', contenido);
     localStorage.setItem('wiki-fecha', new Date().toLocaleString());
-    guardarEstilosPersonalizados();
-    // ❌ Eliminamos la notificación de aquí
-    // mostrarNotificacion('✅ ¡Cambios guardados!');
 }
 
 function guardarCambiosConNotificacion() {
@@ -71,7 +79,7 @@ function guardarEstilosPersonalizados() {
     const estilos = {};
     const secciones = ['plan-carrera', 'sucesion', 'movilidad', 'talento-humano', 'recursos', 'estadisticas'];
 
-    const bodyStyles = window.getComputedStyle(document.body);
+    // Guardar estilos del body
     estilos.body = {
         background: document.body.style.background || '',
         color: document.body.style.color || '',
@@ -79,6 +87,7 @@ function guardarEstilosPersonalizados() {
         fontFamily: document.body.style.fontFamily || ''
     };
 
+    // Guardar estilos del header
     const header = document.querySelector('header');
     if (header) {
         estilos.header = {
@@ -87,6 +96,7 @@ function guardarEstilosPersonalizados() {
         };
     }
 
+    // Guardar estilos de cada sección
     secciones.forEach(id => {
         const el = document.getElementById(id);
         if (el) {
@@ -100,6 +110,7 @@ function guardarEstilosPersonalizados() {
     });
 
     localStorage.setItem('wiki-estilos', JSON.stringify(estilos));
+    console.log('🎨 Estilos guardados:', estilos);
 }
 
 function cargarEstilosPersonalizados() {
@@ -109,6 +120,72 @@ function cargarEstilosPersonalizados() {
         return JSON.parse(estilosGuardados);
     } catch {
         return {};
+    }
+}
+
+function restaurarEstilosPersonalizados() {
+    const estilosGuardados = localStorage.getItem('wiki-estilos');
+    if (!estilosGuardados) {
+        console.log('🎨 No hay estilos guardados');
+        return;
+    }
+    
+    try {
+        const estilos = JSON.parse(estilosGuardados);
+        console.log('🎨 Restaurando estilos:', estilos);
+        
+        // Restaurar estilos del body
+        if (estilos.body) {
+            if (estilos.body.background) {
+                document.body.style.background = estilos.body.background;
+            }
+            if (estilos.body.color) {
+                document.body.style.color = estilos.body.color;
+            }
+            if (estilos.body.fontSize) {
+                document.body.style.fontSize = estilos.body.fontSize;
+            }
+            if (estilos.body.fontFamily) {
+                document.body.style.fontFamily = estilos.body.fontFamily;
+            }
+        }
+        
+        // Restaurar estilos del header
+        if (estilos.header) {
+            const header = document.querySelector('header');
+            if (header) {
+                if (estilos.header.background) {
+                    header.style.background = estilos.header.background;
+                }
+                if (estilos.header.color) {
+                    header.style.color = estilos.header.color;
+                }
+            }
+        }
+        
+        // Restaurar estilos de cada sección
+        const secciones = ['plan-carrera', 'sucesion', 'movilidad', 'talento-humano', 'recursos', 'estadisticas'];
+        secciones.forEach(id => {
+            if (estilos[id]) {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (estilos[id].background) {
+                        el.style.background = estilos[id].background;
+                    }
+                    if (estilos[id].color) {
+                        el.style.color = estilos[id].color;
+                    }
+                    if (estilos[id].fontSize) {
+                        el.style.fontSize = estilos[id].fontSize;
+                    }
+                    if (estilos[id].fontFamily) {
+                        el.style.fontFamily = estilos[id].fontFamily;
+                    }
+                }
+            }
+        });
+    } catch(e) {
+        console.error('Error restaurando estilos:', e);
     }
 }
 
@@ -136,10 +213,22 @@ function verVistaFinal() {
     const bodyMatch = contenidoGuardado.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
     let contenidoBody = bodyMatch ? bodyMatch[1] : '';
 
+    // ✅ ELIMINAR EL BOTÓN "VER VISTA FINAL" DE TODO EL CONTENIDO
+    contenidoBody = contenidoBody
+        .replace(/<button[^>]*class="btn-vista-final"[^>]*>[\s\S]*?<\/button>/gi, '')
+        .replace(/<button[^>]*onclick="verVistaFinal\(\)"[^>]*>[\s\S]*?<\/button>/gi, '')
+        .replace(/<a[^>]*class="btn-vista-final"[^>]*>[\s\S]*?<\/a>/gi, '')
+        .replace(/<div[^>]*style="margin-top:15px;"[^>]*>[\s\S]*?<\/div>/gi, '')
+        .replace(/Ver Vista Final/g, '')
+        .replace(/Ver Vista Final \(Solo Lectura\)/g, '');
+
+    // Eliminar contenteditable
     contenidoBody = contenidoBody.replace(/contenteditable="true"/gi, '');
     contenidoBody = contenidoBody.replace(/contenteditable='true'/gi, '');
 
+    // ✅ ELIMINAR TODOS LOS ELEMENTOS DE EDICIÓN
     contenidoBody = contenidoBody
+        .replace(/<div[^>]*class="edit-notice"[^>]*>[\s\S]*?<\/div>/gi, '')
         .replace(/<div[^>]*class="seccion-botones"[^>]*>[\s\S]*?<\/div>/gi, '')
         .replace(/<div[^>]*class="panel-controls"[^>]*>[\s\S]*?<\/div>/gi, '')
         .replace(/<button[^>]*class="btn-insertar"[^>]*>[\s\S]*?<\/button>/gi, '')
@@ -147,19 +236,42 @@ function verVistaFinal() {
         .replace(/<button[^>]*onclick="insertarVideo[^>]*>[\s\S]*?<\/button>/gi, '')
         .replace(/<button[^>]*onclick="agregarPanel[^>]*>[\s\S]*?<\/button>/gi, '')
         .replace(/<button[^>]*onclick="cambiarLayout[^>]*>[\s\S]*?<\/button>/gi, '')
-        .replace(/<button[^>]*class="btn-vista-final"[^>]*>[\s\S]*?<\/button>/gi, '');
+        .replace(/<div[^>]*class="save-button"[^>]*>[\s\S]*?<\/div>/gi, '')
+        .replace(/<div[^>]*id="panelPersonalizacion"[^>]*>[\s\S]*?<\/div>/gi, '')
+        .replace(/<button[^>]*id="btnAbrirPanel"[^>]*>[\s\S]*?<\/button>/gi, '')
+        .replace(/<button[^>]*class="btn-abrir-panel"[^>]*>[\s\S]*?<\/button>/gi, '');
 
-    contenidoBody = contenidoBody.replace(/<div id="modalInsertar"[^>]*>[\s\S]*?<\/div>/gi, '');
+    // ✅ LIMPIAR HEADER Y AGREGAR INDICADOR
+    contenidoBody = contenidoBody.replace(/<header>([\s\S]*?)<\/header>/gi, function(match, headerContent) {
+        headerContent = headerContent
+            .replace(/<button[^>]*class="btn-vista-final"[^>]*>[\s\S]*?<\/button>/gi, '')
+            .replace(/<button[^>]*onclick="verVistaFinal\(\)"[^>]*>[\s\S]*?<\/button>/gi, '')
+            .replace(/<a[^>]*class="btn-vista-final"[^>]*>[\s\S]*?<\/a>/gi, '')
+            .replace(/<div[^>]*style="margin-top:15px;"[^>]*>[\s\S]*?<\/div>/gi, '')
+            .replace(/Ver Vista Final/g, '');
+        
+        if (!headerContent.includes('Vista Final - Solo Lectura')) {
+            headerContent += `<div style="background:rgba(255,215,0,0.15);padding:8px 20px;border-radius:30px;display:inline-block;margin-top:10px;border:1px solid rgba(255,215,0,0.2);font-size:0.8rem;color:#ffd700;">👁️ Vista Final - Solo Lectura</div>`;
+        }
+        return `<header>${headerContent}</header>`;
+    });
 
-    const footerMatch = contenidoBody.match(/<footer>([\s\S]*?)<\/footer>/i);
-    if (footerMatch) {
-        let footerContent = footerMatch[1];
+    // ✅ LIMPIAR FOOTER
+    contenidoBody = contenidoBody.replace(/<footer>([\s\S]*?)<\/footer>/gi, function(match, footerContent) {
         footerContent = footerContent
             .replace(/<button[^>]*class="btn-vista-final"[^>]*>[\s\S]*?<\/button>/gi, '')
-            .replace(/<div[^>]*style="margin-top:15px;"[^>]*>[\s\S]*?<\/div>/gi, '');
-        contenidoBody = contenidoBody.replace(/<footer>[\s\S]*?<\/footer>/i, `<footer>${footerContent}</footer>`);
-    }
+            .replace(/<button[^>]*onclick="verVistaFinal\(\)"[^>]*>[\s\S]*?<\/button>/gi, '')
+            .replace(/<a[^>]*class="btn-vista-final"[^>]*>[\s\S]*?<\/a>/gi, '')
+            .replace(/<div[^>]*style="margin-top:15px;"[^>]*>[\s\S]*?<\/div>/gi, '')
+            .replace(/Ver Vista Final/g, '');
+        return `<footer>${footerContent}</footer>`;
+    });
 
+    // ✅ ELIMINAR MODALES
+    contenidoBody = contenidoBody.replace(/<div id="modalInsertar"[^>]*>[\s\S]*?<\/div>/gi, '');
+    contenidoBody = contenidoBody.replace(/<div id="modalVideo"[^>]*>[\s\S]*?<\/div>/gi, '');
+
+    // Extraer estilos del documento original
     const styleMatch = contenidoGuardado.match(/<style[^>]*>([\s\S]*?)<\/style>/gi);
     let estilosOriginales = '';
     if (styleMatch) {
@@ -170,6 +282,7 @@ function verVistaFinal() {
 
     let cssPersonalizado = '';
 
+    // Recuperar imágenes de fondo
     const panelRegex = /<div[^>]*class="panel-editable"[^>]*data-imagen-fondo="([^"]*)"[^>]*>/gi;
     let match;
     let imagenesGuardadas = [];
@@ -438,9 +551,9 @@ function verVistaFinal() {
         }
         
         .edit-notice, .save-button, .btn-abrir-panel, .panel-personalizacion,
-        .seccion-botones, .panel-controls, .btn-insertar {
-            display: none !important;
-        }
+.seccion-botones, .panel-controls, .btn-insertar, .btn-vista-final {
+    display: none !important;
+}
         
         [contenteditable="true"] {
             outline: none !important;
@@ -480,24 +593,88 @@ function verVistaFinal() {
     }
 }
 
-function resetearPagina() {
-    if (confirm('⚠️ ¿Seguro que quieres resetear la página? PERDERÁS TODOS LOS CAMBIOS GUARDADOS.')) {
-        // Limpiar todo el localStorage
-        localStorage.removeItem('wiki-contenido');
-        localStorage.removeItem('wiki-vista-final');
-        localStorage.removeItem('wiki-fecha');
-        localStorage.removeItem('wiki-estilos');
+function restaurarEstilosPersonalizados() {
+    const estilosGuardados = localStorage.getItem('wiki-estilos');
+    if (!estilosGuardados) {
+        console.log('🎨 No hay estilos guardados');
+        return;
+    }
+    
+    try {
+        const estilos = JSON.parse(estilosGuardados);
+        console.log('🎨 Restaurando estilos:', estilos);
         
-        // Limpiar imágenes guardadas
-        const keys = Object.keys(localStorage);
-        keys.forEach(key => {
-            if (key.startsWith('panel-imagen-')) {
-                localStorage.removeItem(key);
+        // Restaurar estilos del body
+        if (estilos.body) {
+            if (estilos.body.background) {
+                document.body.style.background = estilos.body.background;
+            }
+            if (estilos.body.color) {
+                document.body.style.color = estilos.body.color;
+            }
+            if (estilos.body.fontSize) {
+                document.body.style.fontSize = estilos.body.fontSize;
+            }
+            if (estilos.body.fontFamily) {
+                document.body.style.fontFamily = estilos.body.fontFamily;
+            }
+        }
+        
+        // Restaurar estilos del header
+        if (estilos.header) {
+            const header = document.querySelector('header');
+            if (header) {
+                if (estilos.header.background) {
+                    header.style.background = estilos.header.background;
+                }
+                if (estilos.header.color) {
+                    header.style.color = estilos.header.color;
+                }
+            }
+        }
+        
+        // Restaurar estilos de cada sección
+        const secciones = ['plan-carrera', 'sucesion', 'movilidad', 'talento-humano', 'recursos', 'estadisticas'];
+        secciones.forEach(id => {
+            if (estilos[id]) {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (estilos[id].background) {
+                        el.style.background = estilos[id].background;
+                    }
+                    if (estilos[id].color) {
+                        el.style.color = estilos[id].color;
+                    }
+                    if (estilos[id].fontSize) {
+                        el.style.fontSize = estilos[id].fontSize;
+                    }
+                    if (estilos[id].fontFamily) {
+                        el.style.fontFamily = estilos[id].fontFamily;
+                    }
+                }
             }
         });
+    } catch(e) {
+        console.error('Error restaurando estilos:', e);
+    }
+}
+
+function resetearPagina() {
+    if (confirm('⚠️ ¿Seguro que quieres resetear la página? PERDERÁS TODOS LOS CAMBIOS GUARDADOS.')) {
+        // ✅ Marcar que estamos en modo reset
+        sessionStorage.setItem('resetEnProgreso', 'true');
+        
+        // Limpiar todo el localStorage
+        localStorage.clear();
+        
+        // Desactivar auto-guardado
+        if (window.intervaloAutoGuardar) {
+            clearInterval(window.intervaloAutoGuardar);
+            window.intervaloAutoGuardar = null;
+        }
         
         // Recargar la página
-        location.reload();
+        location.reload(true);
     }
 }
 
@@ -775,8 +952,12 @@ function insertarVideo(seccionId) {
     seccionActualModal = seccionId;
     tipoInsercionModal = 'video';
     
+    // ✅ ELIMINAR cualquier modal de video existente antes de crear uno nuevo
+    const modalExistente = document.getElementById('modalVideo');
+    if (modalExistente) modalExistente.remove();
+    
     const modalHTML = `
-        <div id="modalVideo" class="modal-insertar" style="display:flex;">
+        <div id="modalVideo" class="modal-insertar" style="display:none;">
             <div class="modal-contenido" style="max-width:550px;">
                 <h3 style="color:#0f3460;margin-bottom:15px;">🎬 Insertar Video de YouTube</h3>
                 <p style="color:#666;margin-bottom:15px;font-size:0.95rem;">Pega la URL del video de YouTube:</p>
@@ -790,10 +971,13 @@ function insertarVideo(seccionId) {
         </div>
     `;
     
-    const modalExistente = document.getElementById('modalVideo');
-    if (modalExistente) modalExistente.remove();
-    
     document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // ✅ Mostrar el modal después de crearlo
+    const modal = document.getElementById('modalVideo');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
 }
 
 function confirmarVideo() {
@@ -839,7 +1023,6 @@ function confirmarVideo() {
         return;
     }
     
-    // Buscar o crear panel
     let panel = contenedor.querySelector('.panel-editable:first-child');
     if (!panel) {
         panel = document.createElement('div');
@@ -857,6 +1040,7 @@ function confirmarVideo() {
             <button onclick="moverPanel(this, 'down')">⬇️</button>
             <button onclick="duplicarPanel(this)">📋</button>
             <button onclick="eliminarPanel(this)" class="btn-eliminar">🗑️</button>
+            <button onclick="eliminarVideo(this)" class="btn-eliminar-video" style="background:rgba(231,76,60,0.3);padding:4px 10px;border:none;border-radius:15px;color:white;font-size:0.75rem;cursor:pointer;">🎬 Eliminar video</button>
         `;
         
         panel.appendChild(contenidoPanel);
@@ -866,12 +1050,9 @@ function confirmarVideo() {
     
     const contenidoPanel = panel.querySelector('div:not(.panel-controls)');
     if (contenidoPanel) {
-        // Eliminar iframe existente
         const existingIframe = contenidoPanel.querySelector('.video-container');
         if (existingIframe) existingIframe.remove();
         
-        // ✅ CREAR LAYOUT DE DOS COLUMNAS
-        // Envolver el contenido existente en un contenedor flex
         const wrapper = document.createElement('div');
         wrapper.className = 'video-layout';
         wrapper.style.cssText = `
@@ -881,16 +1062,13 @@ function confirmarVideo() {
             flex-wrap: wrap;
         `;
         
-        // Mover el contenido actual al wrapper
         const children = Array.from(contenidoPanel.children);
         children.forEach(child => {
-            // No mover si ya es el wrapper
             if (!child.classList || !child.classList.contains('video-layout')) {
                 wrapper.appendChild(child);
             }
         });
         
-        // Crear contenedor del video (columna derecha)
         const videoColumn = document.createElement('div');
         videoColumn.className = 'video-column';
         videoColumn.style.cssText = `
@@ -929,7 +1107,6 @@ function confirmarVideo() {
         videoContainer.appendChild(iframe);
         videoColumn.appendChild(videoContainer);
         
-        // Añadir título sutil al video
         const videoLabel = document.createElement('p');
         videoLabel.style.cssText = `
             font-size: 0.75rem;
@@ -941,7 +1118,6 @@ function confirmarVideo() {
         videoLabel.textContent = '🎬 Video relacionado';
         videoColumn.appendChild(videoLabel);
         
-        // Crear contenedor del texto (columna izquierda)
         const textColumn = document.createElement('div');
         textColumn.className = 'text-column';
         textColumn.style.cssText = `
@@ -949,16 +1125,13 @@ function confirmarVideo() {
             min-width: 200px;
         `;
         
-        // Mover los hijos al textColumn (excepto el video)
         while (wrapper.firstChild) {
             textColumn.appendChild(wrapper.firstChild);
         }
         
-        // Limpiar wrapper y agregar columnas
         wrapper.appendChild(textColumn);
         wrapper.appendChild(videoColumn);
         
-        // Insertar el wrapper al inicio del panel
         contenidoPanel.insertBefore(wrapper, contenidoPanel.firstChild);
     }
     
@@ -969,9 +1142,43 @@ function confirmarVideo() {
 
 function cerrarModalVideo() {
     const modal = document.getElementById('modalVideo');
-    if (modal) modal.remove();
+    if (modal) {
+        modal.style.display = 'none';
+        modal.remove();
+    }
 }
 
+function eliminarVideo(btn) {
+    if (!confirm('¿Eliminar este video?')) return;
+    
+    const panel = btn.closest('.panel-editable');
+    if (!panel) return;
+    
+    const videoContainer = panel.querySelector('.video-container');
+    if (videoContainer) {
+        videoContainer.remove();
+        const label = panel.querySelector('.video-column p');
+        if (label) label.remove();
+        const videoColumn = panel.querySelector('.video-column');
+        if (videoColumn) videoColumn.remove();
+        const wrapper = panel.querySelector('.video-layout');
+        if (wrapper) {
+            const textColumn = wrapper.querySelector('.text-column');
+            if (textColumn) {
+                while (textColumn.firstChild) {
+                    panel.querySelector('div:not(.panel-controls)').appendChild(textColumn.firstChild);
+                }
+                wrapper.remove();
+            }
+        }
+        mostrarNotificacion('🎬 Video eliminado');
+        guardarCambios();
+    } else {
+        mostrarNotificacion('⚠️ No se encontró ningún video para eliminar');
+    }
+}
+
+// Mostrar modal
 // Mostrar modal
 function mostrarModal(titulo, label, placeholder) {
     if (document.body.classList.contains('vista-final')) {
@@ -1065,7 +1272,10 @@ function mostrarModal(titulo, label, placeholder) {
         }
         imagenSubida = null;
     }
-    document.getElementById('modalInsertar').classList.add('visible');
+    // ✅ IMPORTANTE: SOLO mostrar modal si NO estamos en vista final
+    if (!document.body.classList.contains('vista-final')) {
+        document.getElementById('modalInsertar').classList.add('visible');
+    }
 }
 
 // Confirmar inserción - IMAGEN COMO FONDO ELEGANTE
@@ -1330,6 +1540,8 @@ let seccionActual = 'global';
 function togglePanel() {
     const panel = document.getElementById('panelPersonalizacion');
     const btn = document.getElementById('btnAbrirPanel');
+    if (!panel || !btn) return;
+    
     panel.classList.toggle('abierto');
     btn.classList.toggle('oculto');
 
@@ -1566,6 +1778,10 @@ function cargarImagenDesdeInput(input) {
 // ==================== */
 
 function autoGuardar() {
+    // ✅ No guardar si estamos en modo reset
+    if (sessionStorage.getItem('resetEnProgreso') === 'true') {
+        return;
+    }
     guardarCambios();
 }
 
@@ -1593,6 +1809,35 @@ document.addEventListener('click', function() {
         ultimoClick = ahora;
     }
 });
+
+// ==================== */
+// CARGAR CONTENIDO GUARDADO
+// ==================== */
+
+function cargarContenidoGuardado() {
+    const contenidoGuardado = localStorage.getItem('wiki-contenido');
+    if (contenidoGuardado) {
+        // Extraer solo el body del contenido guardado
+        const bodyMatch = contenidoGuardado.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+        if (bodyMatch) {
+            const nuevoBody = bodyMatch[1];
+            // Reemplazar el contenido del body actual
+            document.body.innerHTML = nuevoBody;
+            
+            // Re-ejecutar los scripts después de cargar el contenido
+            const scripts = document.querySelectorAll('script');
+            scripts.forEach(script => {
+                const nuevoScript = document.createElement('script');
+                if (script.src) {
+                    nuevoScript.src = script.src;
+                } else {
+                    nuevoScript.textContent = script.textContent;
+                }
+                document.body.appendChild(nuevoScript);
+            });
+        }
+    }
+}
 
 console.log('📘 Wiki de Planes de Carrera');
 console.log('💡 Haz clic en cualquier texto para editarlo');
