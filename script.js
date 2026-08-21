@@ -58,6 +58,12 @@ function guardarCambios() {
     localStorage.setItem('wiki-contenido', contenido);
     localStorage.setItem('wiki-fecha', new Date().toLocaleString());
     guardarEstilosPersonalizados();
+    // ❌ Eliminamos la notificación de aquí
+    // mostrarNotificacion('✅ ¡Cambios guardados!');
+}
+
+function guardarCambiosConNotificacion() {
+    guardarCambios();
     mostrarNotificacion('✅ ¡Cambios guardados!');
 }
 
@@ -475,11 +481,22 @@ function verVistaFinal() {
 }
 
 function resetearPagina() {
-    if (confirm('¿Seguro que quieres resetear la página? Perderás todos los cambios.')) {
+    if (confirm('⚠️ ¿Seguro que quieres resetear la página? PERDERÁS TODOS LOS CAMBIOS GUARDADOS.')) {
+        // Limpiar todo el localStorage
         localStorage.removeItem('wiki-contenido');
         localStorage.removeItem('wiki-vista-final');
         localStorage.removeItem('wiki-fecha');
         localStorage.removeItem('wiki-estilos');
+        
+        // Limpiar imágenes guardadas
+        const keys = Object.keys(localStorage);
+        keys.forEach(key => {
+            if (key.startsWith('panel-imagen-')) {
+                localStorage.removeItem(key);
+            }
+        });
+        
+        // Recargar la página
         location.reload();
     }
 }
@@ -810,12 +827,10 @@ function confirmarVideo() {
         return;
     }
     
-    // Limpiar el ID del video
     videoId = videoId.split('&')[0];
     videoId = videoId.split('?')[0];
     
-    // ✅ USAR youtube-nocookie.com (funciona mejor para embebidos)
-    const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=0&rel=0&modestbranding=1`;
+    const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0&modestbranding=1&origin=${window.location.origin}`;
     
     const contenedor = document.getElementById('contenido-' + seccionActualModal);
     if (!contenedor) {
@@ -824,6 +839,7 @@ function confirmarVideo() {
         return;
     }
     
+    // Buscar o crear panel
     let panel = contenedor.querySelector('.panel-editable:first-child');
     if (!panel) {
         panel = document.createElement('div');
@@ -850,8 +866,38 @@ function confirmarVideo() {
     
     const contenidoPanel = panel.querySelector('div:not(.panel-controls)');
     if (contenidoPanel) {
+        // Eliminar iframe existente
         const existingIframe = contenidoPanel.querySelector('.video-container');
         if (existingIframe) existingIframe.remove();
+        
+        // ✅ CREAR LAYOUT DE DOS COLUMNAS
+        // Envolver el contenido existente en un contenedor flex
+        const wrapper = document.createElement('div');
+        wrapper.className = 'video-layout';
+        wrapper.style.cssText = `
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        `;
+        
+        // Mover el contenido actual al wrapper
+        const children = Array.from(contenidoPanel.children);
+        children.forEach(child => {
+            // No mover si ya es el wrapper
+            if (!child.classList || !child.classList.contains('video-layout')) {
+                wrapper.appendChild(child);
+            }
+        });
+        
+        // Crear contenedor del video (columna derecha)
+        const videoColumn = document.createElement('div');
+        videoColumn.className = 'video-column';
+        videoColumn.style.cssText = `
+            flex: 0 0 720px;
+            max-width: 720px;
+            min-width: 620px;
+        `;
         
         const videoContainer = document.createElement('div');
         videoContainer.className = 'video-container';
@@ -861,8 +907,7 @@ function confirmarVideo() {
             height: 0;
             overflow: hidden;
             border-radius: 12px;
-            margin: 0 0 15px 0;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
             background: #000;
         `;
         
@@ -877,13 +922,44 @@ function confirmarVideo() {
             border: none;
             border-radius: 12px;
         `;
-        // Permitir todas las funciones necesarias
         iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
         iframe.allowFullscreen = true;
         iframe.loading = 'lazy';
         
         videoContainer.appendChild(iframe);
-        contenidoPanel.insertBefore(videoContainer, contenidoPanel.firstChild);
+        videoColumn.appendChild(videoContainer);
+        
+        // Añadir título sutil al video
+        const videoLabel = document.createElement('p');
+        videoLabel.style.cssText = `
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 6px;
+            text-align: center;
+            font-style: italic;
+        `;
+        videoLabel.textContent = '🎬 Video relacionado';
+        videoColumn.appendChild(videoLabel);
+        
+        // Crear contenedor del texto (columna izquierda)
+        const textColumn = document.createElement('div');
+        textColumn.className = 'text-column';
+        textColumn.style.cssText = `
+            flex: 1;
+            min-width: 200px;
+        `;
+        
+        // Mover los hijos al textColumn (excepto el video)
+        while (wrapper.firstChild) {
+            textColumn.appendChild(wrapper.firstChild);
+        }
+        
+        // Limpiar wrapper y agregar columnas
+        wrapper.appendChild(textColumn);
+        wrapper.appendChild(videoColumn);
+        
+        // Insertar el wrapper al inicio del panel
+        contenidoPanel.insertBefore(wrapper, contenidoPanel.firstChild);
     }
     
     cerrarModalVideo();
@@ -1484,6 +1560,39 @@ function cargarImagenDesdeInput(input) {
     };
     reader.readAsDataURL(file);
 }
+
+// ==================== */
+// GUARDADO AUTOMÁTICO
+// ==================== */
+
+function autoGuardar() {
+    guardarCambios();
+}
+
+// Guardar automáticamente cada 5 segundos
+let intervaloAutoGuardar = setInterval(autoGuardar, 5000);
+
+// Guardar automáticamente antes de cerrar la página
+window.addEventListener('beforeunload', function() {
+    guardarCambios();
+});
+
+// Guardar automáticamente cuando se pierde el foco (cambias de pestaña)
+document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+        guardarCambios();
+    }
+});
+
+// Guardar automáticamente al hacer clic en cualquier parte (cada 10 segundos)
+let ultimoClick = Date.now();
+document.addEventListener('click', function() {
+    const ahora = Date.now();
+    if (ahora - ultimoClick > 10000) {
+        guardarCambios();
+        ultimoClick = ahora;
+    }
+});
 
 console.log('📘 Wiki de Planes de Carrera');
 console.log('💡 Haz clic en cualquier texto para editarlo');

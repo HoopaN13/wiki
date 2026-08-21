@@ -412,7 +412,7 @@
 <!-- BOTONES DE GUARDADO -->
 <!-- ==================== -->
 <div class="save-button">
-    <button onclick="guardarCambios()">💾 Guardar cambios</button>
+    <button onclick="guardarCambiosConNotificacion()">💾 Guardar cambios</button>
     <button onclick="resetearPagina()">🔄 Resetear</button>
 </div>
 
@@ -447,7 +447,72 @@
         const contenidoGuardado = localStorage.getItem('wiki-contenido');
         if (contenidoGuardado) {
             console.log('📂 Hay cambios guardados. Fecha: ' + localStorage.getItem('wiki-fecha'));
+            
+            // Restaurar imágenes de fondo al cargar la página
+            document.querySelectorAll('.panel-editable[data-imagen-fondo]').forEach(panel => {
+                const imgData = panel.getAttribute('data-imagen-fondo');
+                if (imgData && imgData.startsWith('data:image')) {
+                    panel.style.backgroundImage = `url(${imgData})`;
+                    panel.style.backgroundSize = 'cover';
+                    panel.style.backgroundPosition = 'center';
+                    panel.style.backgroundRepeat = 'no-repeat';
+                    panel.style.minHeight = '380px';
+                    panel.style.borderRadius = '16px';
+                    panel.style.border = '1px solid rgba(255,255,255,0.3)';
+                    panel.style.boxShadow = '0 8px 32px rgba(0,0,0,0.15)';
+                    panel.style.padding = '0';
+                    panel.style.overflow = 'hidden';
+                    panel.style.position = 'relative';
+                    panel.style.backgroundColor = 'transparent';
+                    
+                    // Recrear overlay si no existe
+                    if (!panel.querySelector('.panel-overlay')) {
+                        const overlay = document.createElement('div');
+                        overlay.className = 'panel-overlay';
+                        overlay.style.position = 'absolute';
+                        overlay.style.top = '0';
+                        overlay.style.left = '0';
+                        overlay.style.width = '100%';
+                        overlay.style.height = '100%';
+                        overlay.style.background = 'linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.5) 100%)';
+                        overlay.style.zIndex = '1';
+                        overlay.style.borderRadius = '16px';
+                        overlay.style.pointerEvents = 'none';
+                        panel.prepend(overlay);
+                    }
+                    
+                    // Restaurar estilos del contenido
+                    const contenidoPanel = panel.querySelector('div:not(.panel-overlay):not(.panel-controls)');
+                    if (contenidoPanel) {
+                        contenidoPanel.style.position = 'relative';
+                        contenidoPanel.style.zIndex = '2';
+                        contenidoPanel.style.color = '#ffffff';
+                        contenidoPanel.style.textShadow = '0 2px 30px rgba(0,0,0,0.8), 0 0 60px rgba(0,0,0,0.5)';
+                        contenidoPanel.style.padding = '40px 35px';
+                        contenidoPanel.style.minHeight = '320px';
+                        contenidoPanel.style.backgroundColor = 'transparent';
+                        contenidoPanel.style.borderRadius = '16px';
+                        contenidoPanel.style.display = 'flex';
+                        contenidoPanel.style.flexDirection = 'column';
+                        contenidoPanel.style.justifyContent = 'center';
+                        
+                        const textos = contenidoPanel.querySelectorAll('*');
+                        textos.forEach(el => {
+                            el.style.color = '#ffffff';
+                            el.style.textShadow = '0 2px 20px rgba(0,0,0,0.6), 0 0 40px rgba(0,0,0,0.3)';
+                        });
+                        
+                        const titulos = contenidoPanel.querySelectorAll('h2, h3');
+                        titulos.forEach(el => {
+                            el.style.color = '#ffffff';
+                            el.style.textShadow = '0 2px 30px rgba(0,0,0,0.7), 0 0 50px rgba(0,0,0,0.4)';
+                            el.style.borderBottomColor = 'rgba(255,255,255,0.2)';
+                        });
+                    }
+                }
+            });
         }
+        console.log('💾 Auto-guardado activado cada 5 segundos');
     });
 </script>
 
