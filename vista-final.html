@@ -181,29 +181,30 @@
             box-shadow: 0 12px 40px rgba(255, 215, 0, 0.5);
         }
         
-        /* Ocultar elementos de edición */
+        /* ==================== */
+        /* SOLO LECTURA - FORZADO */
+        /* ==================== */
         .edit-notice, .save-button, .btn-abrir-panel, .panel-personalizacion,
         .seccion-botones, .panel-controls, .btn-insertar, .btn-vista-final {
             display: none !important;
         }
         
-        [contenteditable="true"] {
-            outline: none !important;
-            background: transparent !important;
+        /* BLOQUEAR CUALQUIER EDICIÓN */
+        .panel-editable,
+        .panel-editable *,
+        [contenteditable="true"],
+        [contenteditable=""] {
             cursor: default !important;
-        }
-        [contenteditable="true"]:hover,
-        [contenteditable="true"]:focus {
+            user-select: text !important;
             outline: none !important;
-            background: transparent !important;
-            cursor: default !important;
+            box-shadow: none !important;
+            border: none !important;
         }
         
-        .overlay-oscuro, .notificacion-flotante {
-            display: none !important;
-        }
-        .modal-insertar {
-            display: none !important;
+        .panel-editable:hover,
+        .panel-editable *:hover {
+            outline: none !important;
+            box-shadow: none !important;
         }
         
         /* Estilos para paneles */
@@ -255,7 +256,7 @@
             font-weight: 700 !important;
         }
         
-        /* Estilos para imágenes de fondo en paneles */
+        /* Imágenes de fondo */
         .panel-editable[style*="background-image"] {
             border-radius: 16px !important;
             border: 1px solid rgba(255,255,255,0.3) !important;
@@ -311,6 +312,13 @@
             margin-bottom: 16px !important;
         }
         
+        .overlay-oscuro, .notificacion-flotante {
+            display: none !important;
+        }
+        .modal-insertar {
+            display: none !important;
+        }
+        
         @media (max-width: 700px) {
             header {
                 padding: 25px 20px;
@@ -326,7 +334,6 @@
 </head>
 <body class="vista-final">
     <div id="contenido-principal">
-        <!-- El contenido se cargará desde localStorage -->
         <div style="text-align:center;padding:50px;color:#888;">
             <p>Cargando vista final...</p>
             <div style="margin-top:20px;width:40px;height:40px;border:4px solid #f0f4ff;border-top-color:#0f3460;border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;"></div>
@@ -338,7 +345,93 @@
         </div>
     </div>
 
+    <footer id="footer-principal">
+        <p>📅 Wiki colaborativa - Equipo de Psicología Organizacional | 2026</p>
+        <div style="margin-top:15px;">
+            <a href="index.html" class="btn-volver">✏️ Volver al modo edición</a>
+        </div>
+        <div style="margin-top:20px;padding:15px;background:rgba(255,255,255,0.08);border-radius:10px;border:1px solid rgba(255,255,255,0.05);">
+            <p style="font-size:0.75rem;opacity:0.6;margin-bottom:5px;">
+                🔗 Comparte esta vista final con tu profesora:
+            </p>
+            <p style="font-size:0.8rem;color:#ffd700;word-break:break-all;font-weight:500;" id="urlVistaFinal">
+                Cargando URL...
+            </p>
+            <button onclick="copiarURL()" style="margin-top:8px;padding:6px 20px;background:rgba(255,215,0,0.15);border:1px solid rgba(255,215,0,0.3);border-radius:20px;color:#ffd700;font-size:0.75rem;cursor:pointer;transition:all 0.3s;">
+                📋 Copiar URL
+            </button>
+        </div>
+    </footer>
+
     <script>
+        // ==================== */
+        // FORZAR SOLO LECTURA - VERSIÓN AGRESIVA
+        // ==================== */
+        
+        function forzarSoloLectura() {
+            // 1. Eliminar TODOS los contenteditable
+            document.querySelectorAll('[contenteditable]').forEach(el => {
+                el.removeAttribute('contenteditable');
+                el.contentEditable = 'false';
+            });
+            
+            // 2. Eliminar TODOS los elementos de edición
+            document.querySelectorAll('.edit-notice, .save-button, .btn-abrir-panel, .panel-personalizacion, .seccion-botones, .panel-controls, .btn-insertar, .btn-vista-final').forEach(el => {
+                if (el) {
+                    el.style.display = 'none !important';
+                    if (el.parentNode) {
+                        el.remove();
+                    }
+                }
+            });
+            
+            // 3. Forzar contentEditable=false en TODOS los elementos del panel
+            document.querySelectorAll('.panel-editable, .panel-editable *').forEach(el => {
+                el.contentEditable = 'false';
+                el.setAttribute('contenteditable', 'false');
+                el.style.cursor = 'default';
+                el.style.userSelect = 'text';
+                el.style.outline = 'none';
+                el.style.boxShadow = 'none';
+            });
+            
+            // 4. Bloquear eventos de teclado (edición)
+            document.addEventListener('keydown', function(e) {
+                if (e.target.closest('.panel-editable')) {
+                    // Permitir solo Ctrl+C y Ctrl+V para copiar/pegar
+                    if (e.ctrlKey && (e.key === 'c' || e.key === 'v')) {
+                        return;
+                    }
+                    // Bloquear cualquier otra tecla
+                    e.preventDefault();
+                    return false;
+                }
+            }, true);
+            
+            // 5. Bloquear eventos de mouse (selección y edición)
+            document.addEventListener('mousedown', function(e) {
+                if (e.target.closest('.panel-editable')) {
+                    // Permitir solo selección de texto
+                    if (e.target.closest('p, li, h2, h3, h4, strong, em, span')) {
+                        return;
+                    }
+                    // Bloquear otros eventos
+                    e.preventDefault();
+                    return false;
+                }
+            }, true);
+            
+            // 6. Prevenir context menu (clic derecho)
+            document.addEventListener('contextmenu', function(e) {
+                if (e.target.closest('.panel-editable')) {
+                    e.preventDefault();
+                    return false;
+                }
+            }, true);
+            
+            console.log('🔒 Vista final: Solo lectura FORZADO');
+        }
+
         // ==================== */
         // CARGAR VISTA FINAL DESDE LOCALSTORAGE
         // ==================== */
@@ -361,9 +454,13 @@
             const bodyMatch = contenidoGuardado.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
             let contenidoBody = bodyMatch ? bodyMatch[1] : '';
 
-            // Eliminar contenteditable
-            contenidoBody = contenidoBody.replace(/contenteditable="true"/gi, '');
-            contenidoBody = contenidoBody.replace(/contenteditable='true'/gi, '');
+            // ✅ ELIMINAR TODOS LOS contenteditable ANTES de insertar
+            contenidoBody = contenidoBody
+                .replace(/contenteditable="true"/gi, '')
+                .replace(/contenteditable='true'/gi, '')
+                .replace(/contenteditable=""/gi, '')
+                .replace(/contenteditable=''/gi, '')
+                .replace(/contenteditable/gi, '');
 
             // ✅ ELIMINAR TODOS LOS ELEMENTOS DE EDICIÓN
             contenidoBody = contenidoBody
@@ -387,6 +484,9 @@
             // Insertar el contenido limpio
             document.getElementById('contenido-principal').innerHTML = contenidoBody;
 
+            // ✅ FORZAR SOLO LECTURA
+            forzarSoloLectura();
+
             // ✅ RESTAURAR IMÁGENES DE FONDO
             document.querySelectorAll('.panel-editable[data-imagen-fondo]').forEach(panel => {
                 const imgData = panel.getAttribute('data-imagen-fondo');
@@ -404,7 +504,6 @@
                     panel.style.position = 'relative';
                     panel.style.backgroundColor = 'transparent';
                     
-                    // Crear overlay si no existe
                     if (!panel.querySelector('.panel-overlay')) {
                         const overlay = document.createElement('div');
                         overlay.className = 'panel-overlay';
@@ -416,7 +515,6 @@
                         panel.prepend(overlay);
                     }
                     
-                    // Estilos del contenido dentro del panel
                     const contenidoPanel = panel.querySelector('div:not(.panel-overlay):not(.panel-controls)');
                     if (contenidoPanel) {
                         contenidoPanel.style.cssText = `
@@ -467,10 +565,67 @@
                 indicador.textContent = '👁️ Vista Final - Solo Lectura';
                 header.appendChild(indicador);
             }
+            
+            // ✅ VOLVER A FORZAR SOLO LECTURA
+            forzarSoloLectura();
         }
 
-        // Ejecutar al cargar la página
-        document.addEventListener('DOMContentLoaded', cargarVistaFinal);
+        // ==================== */
+        // MOSTRAR Y COPIAR URL
+        // ==================== */
+
+        function mostrarURL() {
+            const urlElement = document.getElementById('urlVistaFinal');
+            if (urlElement) {
+                urlElement.textContent = window.location.href;
+            }
+        }
+
+        function copiarURL() {
+            const url = window.location.href;
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(url).then(() => {
+                    const btn = event.target;
+                    const textoOriginal = btn.textContent;
+                    btn.textContent = '✅ ¡Copiado!';
+                    btn.style.background = 'rgba(46,204,113,0.2)';
+                    btn.style.borderColor = 'rgba(46,204,113,0.4)';
+                    setTimeout(() => {
+                        btn.textContent = textoOriginal;
+                        btn.style.background = 'rgba(255,215,0,0.15)';
+                        btn.style.borderColor = 'rgba(255,215,0,0.3)';
+                    }, 2000);
+                }).catch(() => {
+                    const url = window.location.href;
+                    const textarea = document.createElement('textarea');
+                    textarea.value = url;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    alert('✅ URL copiada al portapapeles');
+                });
+            } else {
+                const url = window.location.href;
+                const textarea = document.createElement('textarea');
+                textarea.value = url;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('✅ URL copiada al portapapeles');
+            }
+        }
+
+        // ==================== */
+        // EJECUTAR AL CARGAR
+        // ==================== */
+
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarVistaFinal();
+            mostrarURL();
+            forzarSoloLectura();
+        });
     </script>
 </body>
 </html>
