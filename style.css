@@ -23,13 +23,17 @@
     box-sizing: border-box;
 }
 
+/* ==================== */
+/* FONDO DIRECTO EN BODY */
+/* ==================== */
 body {
     font-family: var(--font-main);
-    background: linear-gradient(135deg, var(--color-bg-start) 0%, var(--color-bg-middle) 50%, var(--color-bg-end) 100%);
     color: var(--text-dark);
     line-height: 1.6;
     padding: 20px;
     min-height: 100vh;
+    background: linear-gradient(135deg, var(--color-bg-start) 0%, var(--color-bg-middle) 50%, var(--color-bg-end) 100%);
+    transition: background 0.5s ease !important;
 }
 
 /* ==================== */
@@ -158,10 +162,10 @@ nav ul li a:hover {
 }
 
 /* ==================== */
-/* SECCIONES - SIN RECUADROS */
+/* SECCIONES - SIN RECUADROS EXTERNOS */
 /* ==================== */
 main section {
-    background: transparent;
+    background: transparent !important;
     padding: 10px 0 30px 0;
     margin-bottom: 20px;
     border: none;
@@ -174,43 +178,16 @@ main section:hover {
     box-shadow: none;
 }
 
-main section h2 {
-    font-family: var(--font-title);
-    color: var(--color-primary);
-    font-size: 2rem;
-    border-bottom: 4px solid;
-    border-image: linear-gradient(135deg, var(--color-accent), var(--color-accent-hover)) 1;
-    padding-bottom: 12px;
-    margin-bottom: 20px;
-}
-
-main section h3 {
-    color: var(--color-secondary);
-    font-weight: 700;
-    margin: 25px 0 12px 0;
-    font-size: 1.2rem;
-}
-
-main section ul {
-    padding-left: 25px;
-    margin: 10px 0;
-}
-
-main section ul li {
-    margin-bottom: 8px;
-    padding-left: 5px;
-}
-
 /* ==================== */
-/* SECCIÓN HEADER CON BOTONES */
+/* SECCIÓN HEADER CON BOTONES - OCULTOS AL HOVER */
 /* ==================== */
 .seccion-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     flex-wrap: wrap;
-    gap: 15px;
-    margin-bottom: 15px;
+    gap: 10px;
+    margin-bottom: 5px;
     position: relative;
 }
 
@@ -264,12 +241,12 @@ section:hover .seccion-botones,
 }
 
 /* ==================== */
-/* PANELES EDITABLES - CON ESTILO FIJO (NO HEREDAN EL FONDO GLOBAL) */
+/* PANELES UNIFICADOS - CONTIENEN TODO EL CONTENIDO */
 /* ==================== */
 .seccion-contenido {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
 }
 
 .seccion-contenido.horizontal {
@@ -280,31 +257,32 @@ section:hover .seccion-botones,
 
 .seccion-contenido.horizontal .panel-editable {
     flex: 1;
-    min-width: 250px;
+    min-width: 280px;
 }
 
 .seccion-contenido.grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 20px;
 }
 
 /* ==================== */
-/* ESTILOS FIJOS PARA PANELES - NO HEREDAN EL FONDO GLOBAL */
+/* PANELES CON FONDO BLANCO SÓLIDO - NO SE VEN AFECTADOS POR EL FONDO GLOBAL */
 /* ==================== */
 .panel-editable {
-    background: rgba(255, 255, 255, 0.95) !important;
+    background: #ffffff !important;
     border: 1px solid #e8ecf1 !important;
-    border-radius: 12px !important;
-    padding: 15px 20px !important;
-    margin-bottom: 15px !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
-    transition: all 0.3s ease;
+    border-radius: 16px !important;
+    padding: 25px 30px !important;
+    margin-bottom: 20px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06) !important;
+    transition: all 0.3s ease !important;
     position: relative;
 }
 
 .panel-editable:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10) !important;
+    transform: translateY(-2px) !important;
 }
 
 .panel-editable.dragging {
@@ -314,15 +292,34 @@ section:hover .seccion-botones,
 /* ==================== */
 /* TEXTOS DENTRO DE PANELES - COLORES FIJOS */
 /* ==================== */
+.panel-editable h2 {
+    color: #0a2f44 !important;
+    font-family: 'Playfair Display', serif !important;
+    font-size: 1.8rem !important;
+    border-bottom: 3px solid rgba(10, 47, 68, 0.10) !important;
+    padding-bottom: 10px !important;
+    margin-bottom: 15px !important;
+}
+
 .panel-editable h3 {
     color: #1a4b6e !important;
     font-weight: 700 !important;
-    margin: 15px 0 10px 0 !important;
+    margin: 18px 0 10px 0 !important;
+    font-size: 1.2rem !important;
+}
+
+.panel-editable h4 {
+    color: #1a4b6e !important;
+    font-weight: 600 !important;
+    margin: 15px 0 8px 0 !important;
+    font-size: 1.1rem !important;
 }
 
 .panel-editable p {
     color: #1a2a3a !important;
     margin: 10px 0 !important;
+    font-size: 1rem !important;
+    line-height: 1.7 !important;
 }
 
 .panel-editable ul {
@@ -333,10 +330,54 @@ section:hover .seccion-botones,
 .panel-editable ul li {
     color: #1a2a3a !important;
     margin-bottom: 8px !important;
+    font-size: 1rem !important;
 }
 
 .panel-editable strong {
     color: #0a2f44 !important;
+    font-weight: 700 !important;
+}
+
+.panel-editable a {
+    color: #0f3460 !important;
+    text-decoration: none !important;
+}
+
+.panel-editable a:hover {
+    text-decoration: underline !important;
+}
+
+/* ==================== */
+/* TABLAS DENTRO DE PANELES */
+/* ==================== */
+.panel-editable table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.panel-editable table th {
+    background: linear-gradient(135deg, #1a1a2e, #0f3460);
+    color: white;
+    padding: 10px 15px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.panel-editable table td {
+    padding: 10px 15px;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.panel-editable table tr:nth-child(even) {
+    background: #f8faff;
+}
+
+.panel-editable table tr:hover {
+    background: #f0f4ff;
 }
 
 /* ==================== */
@@ -345,14 +386,14 @@ section:hover .seccion-botones,
 .panel-controls {
     display: flex;
     gap: 5px;
-    margin-top: 8px;
-    padding-top: 8px;
+    margin-top: 15px;
+    padding-top: 15px;
     border-top: 1px solid rgba(0, 0, 0, 0.06);
     flex-wrap: wrap;
 }
 
 .panel-controls button {
-    padding: 3px 10px;
+    padding: 4px 12px;
     border: none;
     border-radius: 15px;
     background: rgba(15, 52, 96, 0.08);
@@ -451,39 +492,6 @@ section:hover .seccion-botones,
 [contenteditable="true"]:focus,
 [contenteditable="true"]:focus * {
     background: transparent !important;
-}
-
-/* ==================== */
-/* TABLAS */
-/* ==================== */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-}
-
-table th {
-    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-    color: var(--text-light);
-    padding: 14px 20px;
-    text-align: left;
-    font-weight: 600;
-}
-
-table td {
-    padding: 14px 20px;
-    border-bottom: 1px solid #eef2f7;
-}
-
-table tr:nth-child(even) {
-    background: #f8faff;
-}
-
-table tr:hover {
-    background: #f0f4ff;
 }
 
 /* ==================== */
@@ -988,6 +996,18 @@ main section:nth-child(5) { animation-delay: 0.5s; }
         padding: 10px 0 20px 0;
     }
 
+    .panel-editable {
+        padding: 18px 20px !important;
+    }
+
+    .panel-editable h2 {
+        font-size: 1.5rem !important;
+    }
+
+    .panel-editable h3 {
+        font-size: 1.1rem !important;
+    }
+
     .save-button {
         flex-direction: column;
         bottom: 15px;
@@ -1023,4 +1043,207 @@ main section:nth-child(5) { animation-delay: 0.5s; }
     .modal-contenido {
         padding: 20px;
     }
+}
+/* ==================== */
+/* PANELES CON IMAGEN DE FONDO */
+/* ==================== */
+.panel-editable[style*="background-image"] {
+    border-radius: 16px !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    position: relative !important;
+    min-height: 320px !important;
+}
+
+.panel-editable[style*="background-image"] > div:first-child {
+    position: relative !important;
+    z-index: 2 !important;
+    color: #ffffff !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8) !important;
+    padding: 30px 25px !important;
+    min-height: 280px !important;
+    background: rgba(0, 0, 0, 0.25) !important;
+    border-radius: 16px !important;
+    backdrop-filter: blur(2px) !important;
+    -webkit-backdrop-filter: blur(2px) !important;
+}
+
+.panel-editable[style*="background-image"] h2 {
+    color: #ffffff !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
+    font-family: 'Playfair Display', serif !important;
+    font-size: 1.8rem !important;
+    padding-bottom: 10px !important;
+    margin-bottom: 15px !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+}
+
+.panel-editable[style*="background-image"] h3 {
+    color: #ffffff !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+}
+
+.panel-editable[style*="background-image"] p,
+.panel-editable[style*="background-image"] ul li,
+.panel-editable[style*="background-image"] li {
+    color: #ffffff !important;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+.panel-editable[style*="background-image"] strong {
+    color: #ffffff !important;
+}
+
+.panel-editable[style*="background-image"] .panel-controls {
+    position: relative !important;
+    z-index: 2 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+    padding-top: 10px !important;
+    margin-top: 10px !important;
+}
+
+.panel-editable[style*="background-image"] .panel-controls button {
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.panel-editable[style*="background-image"] .panel-controls .btn-eliminar {
+    background: rgba(231, 76, 60, 0.6) !important;
+}
+
+.panel-editable[style*="background-image"] .panel-controls button:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ==================== */
+/* PANELES CON IMAGEN DE FONDO - ESTILO ELEGANTE */
+/* ==================== */
+
+/* Paneles que tienen imagen de fondo */
+.panel-editable[style*="background-image"] {
+    border-radius: 16px !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    position: relative !important;
+    min-height: 320px !important;
+    background-size: cover !important;
+    background-position: center !important;
+}
+
+/* Overlay con degradado suave */
+.panel-editable[style*="background-image"] .panel-overlay {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(135deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.2) 100%) !important;
+    z-index: 1 !important;
+    border-radius: 16px !important;
+    pointer-events: none !important;
+}
+
+/* Contenido sobre la imagen */
+.panel-editable[style*="background-image"] > div:not(.panel-overlay):not(.panel-controls) {
+    position: relative !important;
+    z-index: 2 !important;
+    color: #ffffff !important;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.5) !important;
+    padding: 35px 30px !important;
+    min-height: 280px !important;
+    background: transparent !important;
+    border-radius: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+}
+
+/* Todos los textos dentro del panel con imagen */
+.panel-editable[style*="background-image"] h2,
+.panel-editable[style*="background-image"] h3,
+.panel-editable[style*="background-image"] p,
+.panel-editable[style*="background-image"] ul li,
+.panel-editable[style*="background-image"] li,
+.panel-editable[style*="background-image"] strong,
+.panel-editable[style*="background-image"] em {
+    color: #ffffff !important;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.5) !important;
+}
+
+/* Títulos dentro del panel con imagen */
+.panel-editable[style*="background-image"] h2 {
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
+    font-family: 'Playfair Display', serif !important;
+    font-size: 1.8rem !important;
+    padding-bottom: 12px !important;
+    margin-bottom: 16px !important;
+}
+
+.panel-editable[style*="background-image"] h3 {
+    font-weight: 700 !important;
+    font-size: 1.2rem !important;
+    margin-top: 10px !important;
+}
+
+/* Controles sobre la imagen */
+.panel-editable[style*="background-image"] .panel-controls {
+    position: relative !important;
+    z-index: 2 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+    padding-top: 12px !important;
+    margin-top: 10px !important;
+}
+
+.panel-editable[style*="background-image"] .panel-controls button {
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(4px) !important;
+}
+
+.panel-editable[style*="background-image"] .panel-controls .btn-eliminar {
+    background: rgba(231, 76, 60, 0.5) !important;
+    border: 1px solid rgba(231, 76, 60, 0.3) !important;
+}
+
+.panel-editable[style*="background-image"] .panel-controls button:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+    transform: scale(1.05);
+}
+
+/* Contenido editable dentro del panel con imagen */
+.panel-editable[style*="background-image"] [contenteditable="true"]:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.panel-editable[style*="background-image"] [contenteditable="true"]:focus {
+    background: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Estilos para videos en paneles */
+.panel-editable .video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    margin: 0 0 20px 0;
+    background: #000;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.panel-editable .video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 12px;
 }

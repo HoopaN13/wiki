@@ -5,6 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wiki: Planes de Carrera</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Asegurar que los paneles mantengan fondo blanco en edición */
+        .panel-editable {
+            background: #ffffff !important;
+            border: 1px solid #e8ecf1 !important;
+            border-radius: 16px !important;
+            padding: 22px 25px !important;
+            margin-bottom: 20px !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+        }
+        .panel-editable h2 {
+            color: #0a2f44 !important;
+            font-family: 'Playfair Display', serif !important;
+            font-size: 1.8rem !important;
+            border-bottom: 3px solid rgba(10, 47, 68, 0.10) !important;
+            padding-bottom: 10px !important;
+            margin-bottom: 15px !important;
+        }
+        .panel-editable h3 {
+            color: #1a4b6e !important;
+            font-weight: 700 !important;
+            margin: 18px 0 10px 0 !important;
+            font-size: 1.2rem !important;
+        }
+        .panel-editable p {
+            color: #1a2a3a !important;
+            margin: 10px 0 !important;
+            font-size: 1rem !important;
+            line-height: 1.7 !important;
+        }
+        .panel-editable ul {
+            padding-left: 25px !important;
+            margin: 10px 0 !important;
+        }
+        .panel-editable ul li {
+            color: #1a2a3a !important;
+            margin-bottom: 8px !important;
+            font-size: 1rem !important;
+        }
+        .panel-editable strong {
+            color: #0a2f44 !important;
+            font-weight: 700 !important;
+        }
+    </style>
 </head>
 <body>
 
@@ -111,7 +155,6 @@
     <!-- ======================================== -->
     <section id="plan-carrera">
         <div class="seccion-header">
-            <h2 contenteditable="true">📌 Plan de Carrera</h2>
             <div class="seccion-botones">
                 <button onclick="insertarImagen('plan-carrera')" class="btn-insertar">🖼️ Imagen</button>
                 <button onclick="insertarVideo('plan-carrera')" class="btn-insertar">🎬 Video</button>
@@ -120,6 +163,7 @@
         <div class="seccion-contenido" id="contenido-plan-carrera">
             <div class="panel-editable" data-id="panel1">
                 <div contenteditable="true">
+                    <h2>📌 Plan de Carrera</h2>
                     <p>El <strong>plan de carrera</strong> es una herramienta estratégica que permite a los colaboradores visualizar su crecimiento dentro de la organización.</p>
                     <h3>📖 Definición</h3>
                     <p>Ruta de crecimiento profesional dentro de una empresa que incluye:</p>
@@ -129,32 +173,12 @@
                         <li>Diseño de plan de desarrollo</li>
                         <li>Seguimiento y retroalimentación</li>
                     </ul>
-                </div>
-                <div class="panel-controls">
-                    <button onclick="moverPanel(this,'up')">⬆️</button>
-                    <button onclick="moverPanel(this,'down')">⬇️</button>
-                    <button onclick="duplicarPanel(this)">📋</button>
-                    <button onclick="eliminarPanel(this)" class="btn-eliminar">🗑️</button>
-                </div>
-            </div>
-            <div class="panel-editable" data-id="panel2">
-                <div contenteditable="true">
                     <h3>⭐ Importancia</h3>
                     <ul>
                         <li><strong>Motivación:</strong> Los empleados se sienten valorados</li>
                         <li><strong>Retención:</strong> Reduce la rotación de personal</li>
                         <li><strong>Productividad:</strong> Colaboradores más comprometidos</li>
                     </ul>
-                </div>
-                <div class="panel-controls">
-                    <button onclick="moverPanel(this,'up')">⬆️</button>
-                    <button onclick="moverPanel(this,'down')">⬇️</button>
-                    <button onclick="duplicarPanel(this)">📋</button>
-                    <button onclick="eliminarPanel(this)" class="btn-eliminar">🗑️</button>
-                </div>
-            </div>
-            <div class="panel-editable" data-id="panel3">
-                <div contenteditable="true">
                     <h3>📋 Ejemplo práctico</h3>
                     <p>Una psicóloga organizacional puede seguir esta ruta:</p>
                     <ul>
@@ -178,7 +202,6 @@
     <!-- ======================================== -->
     <section id="sucesion">
         <div class="seccion-header">
-            <h2 contenteditable="true">🔄 Programas de Sucesión</h2>
             <div class="seccion-botones">
                 <button onclick="insertarImagen('sucesion')" class="btn-insertar">🖼️ Imagen</button>
                 <button onclick="insertarVideo('sucesion')" class="btn-insertar">🎬 Video</button>
@@ -187,6 +210,7 @@
         <div class="seccion-contenido" id="contenido-sucesion">
             <div class="panel-editable" data-id="panel1">
                 <div contenteditable="true">
+                    <h2>🔄 Programas de Sucesión</h2>
                     <p>Los <strong>programas de sucesión</strong> aseguran que haya talento preparado para ocupar posiciones clave.</p>
                     <h3>🎯 Objetivos</h3>
                     <ul>
@@ -194,21 +218,17 @@
                         <li>Preparar líderes para el futuro</li>
                         <li>Garantizar continuidad operativa</li>
                     </ul>
-                </div>
-                <div class="panel-controls">
-                    <button onclick="moverPanel(this,'up')">⬆️</button>
-                    <button onclick="moverPanel(this,'down')">⬇️</button>
-                    <button onclick="duplicarPanel(this)">📋</button>
-                    <button onclick="eliminarPanel(this)" class="btn-eliminar">🗑️</button>
-                </div>
-            </div>
-            <div class="panel-editable" data-id="panel2">
-                <div contenteditable="true">
                     <h3>✅ Beneficios</h3>
                     <ul>
                         <li>Reducción de riesgos por vacantes</li>
                         <li>Desarrollo interno de talento</li>
                         <li>Cultura de crecimiento profesional</li>
+                    </ul>
+                    <h3>🏢 Empresas con programas exitosos</h3>
+                    <ul>
+                        <li><strong>IBM:</strong> Programa de liderazgo de 3 años</li>
+                        <li><strong>Nestlé:</strong> Plan de sucesión para gerentes</li>
+                        <li><strong>BBVA:</strong> Desarrollo de talento joven</li>
                     </ul>
                 </div>
                 <div class="panel-controls">
@@ -226,7 +246,6 @@
     <!-- ======================================== -->
     <section id="movilidad">
         <div class="seccion-header">
-            <h2 contenteditable="true">🌍 Movilidad Interna y Externa</h2>
             <div class="seccion-botones">
                 <button onclick="insertarImagen('movilidad')" class="btn-insertar">🖼️ Imagen</button>
                 <button onclick="insertarVideo('movilidad')" class="btn-insertar">🎬 Video</button>
@@ -235,26 +254,27 @@
         <div class="seccion-contenido" id="contenido-movilidad">
             <div class="panel-editable" data-id="panel1">
                 <div contenteditable="true">
+                    <h2>🌍 Movilidad Interna y Externa</h2>
+                    <p>La <strong>movilidad</strong> permite a los empleados expandir sus horizontes profesionales.</p>
                     <h3>🏢 Movilidad Interna</h3>
                     <ul>
                         <li><strong>Definición:</strong> Cambios dentro de la misma organización</li>
                         <li><strong>Tipos:</strong> Ascensos, traslados, rotación</li>
+                        <li><strong>Ejemplo:</strong> Analista → Gerente</li>
                     </ul>
-                </div>
-                <div class="panel-controls">
-                    <button onclick="moverPanel(this,'up')">⬆️</button>
-                    <button onclick="moverPanel(this,'down')">⬇️</button>
-                    <button onclick="duplicarPanel(this)">📋</button>
-                    <button onclick="eliminarPanel(this)" class="btn-eliminar">🗑️</button>
-                </div>
-            </div>
-            <div class="panel-editable" data-id="panel2">
-                <div contenteditable="true">
                     <h3>🌐 Movilidad Externa</h3>
                     <ul>
                         <li><strong>Definición:</strong> Experiencias fuera de la organización</li>
                         <li><strong>Tipos:</strong> Intercambios, estudios, prácticas</li>
+                        <li><strong>Ejemplo:</strong> Máster en el extranjero</li>
                     </ul>
+                    <h3>📊 Comparativa</h3>
+                    <table>
+                        <tr><th>Aspecto</th><th>Interna</th><th>Externa</th></tr>
+                        <tr><td>⏱️ Tiempo</td><td>1-3 años</td><td>3-6 meses</td></tr>
+                        <tr><td>📚 Conocimiento</td><td>Profundiza</td><td>Amplía</td></tr>
+                        <tr><td>⚠️ Riesgo</td><td>Menor</td><td>Mayor</td></tr>
+                    </table>
                 </div>
                 <div class="panel-controls">
                     <button onclick="moverPanel(this,'up')">⬆️</button>
@@ -271,7 +291,6 @@
     <!-- ======================================== -->
     <section id="talento-humano">
         <div class="seccion-header">
-            <h2 contenteditable="true">🧠 Aportes del Talento Humano</h2>
             <div class="seccion-botones">
                 <button onclick="insertarImagen('talento-humano')" class="btn-insertar">🖼️ Imagen</button>
                 <button onclick="insertarVideo('talento-humano')" class="btn-insertar">🎬 Video</button>
@@ -280,6 +299,7 @@
         <div class="seccion-contenido" id="contenido-talento-humano">
             <div class="panel-editable" data-id="panel1">
                 <div contenteditable="true">
+                    <h2>🧠 Aportes del Talento Humano</h2>
                     <p>El <strong>área de Talento Humano</strong> es clave para diseñar e implementar los planes de carrera.</p>
                     <h3>🔧 Funciones clave</h3>
                     <ul>
@@ -287,6 +307,13 @@
                         <li><strong>Diseño:</strong> Creación de rutas formativas</li>
                         <li><strong>Implementación:</strong> Capacitación continua</li>
                         <li><strong>Monitoreo:</strong> Seguimiento y retroalimentación</li>
+                    </ul>
+                    <h3>📊 Herramientas</h3>
+                    <ul>
+                        <li>📊 Evaluaciones de desempeño</li>
+                        <li>📝 Planes de desarrollo individual (PDI)</li>
+                        <li>🎯 Matrices de talento</li>
+                        <li>💬 Entrevistas de seguimiento</li>
                     </ul>
                 </div>
                 <div class="panel-controls">
@@ -304,7 +331,6 @@
     <!-- ======================================== -->
     <section id="estadisticas">
         <div class="seccion-header">
-            <h2 contenteditable="true">📊 Estadísticas y Datos</h2>
             <div class="seccion-botones">
                 <button onclick="insertarImagen('estadisticas')" class="btn-insertar">🖼️ Imagen</button>
                 <button onclick="insertarVideo('estadisticas')" class="btn-insertar">🎬 Video</button>
@@ -313,12 +339,20 @@
         <div class="seccion-contenido" id="contenido-estadisticas">
             <div class="panel-editable" data-id="panel1">
                 <div contenteditable="true">
+                    <h2>📊 Estadísticas y Datos</h2>
                     <p>Datos importantes sobre planes de carrera en organizaciones:</p>
                     <ul>
                         <li>📈 <strong>85%</strong> de las empresas tienen plan de carrera</li>
                         <li>📉 <strong>30%</strong> reducción en rotación con plan de carrera</li>
                         <li>📊 <strong>70%</strong> de empleados valoran crecimiento profesional</li>
                     </ul>
+                    <h3>📈 Evolución de retención</h3>
+                    <table>
+                        <tr><th>Año</th><th>Sin plan</th><th>Con plan</th></tr>
+                        <tr><td>2022</td><td>60%</td><td>85%</td></tr>
+                        <tr><td>2023</td><td>65%</td><td>90%</td></tr>
+                        <tr><td>2024</td><td>70%</td><td>92%</td></tr>
+                    </table>
                 </div>
                 <div class="panel-controls">
                     <button onclick="moverPanel(this,'up')">⬆️</button>
@@ -335,7 +369,6 @@
     <!-- ======================================== -->
     <section id="recursos">
         <div class="seccion-header">
-            <h2 contenteditable="true">📚 Recursos y Referencias</h2>
             <div class="seccion-botones">
                 <button onclick="insertarImagen('recursos')" class="btn-insertar">🖼️ Imagen</button>
                 <button onclick="insertarVideo('recursos')" class="btn-insertar">🎬 Video</button>
@@ -344,10 +377,13 @@
         <div class="seccion-contenido" id="contenido-recursos">
             <div class="panel-editable" data-id="panel1">
                 <div contenteditable="true">
+                    <h2>📚 Recursos y Referencias</h2>
                     <p><em>Agreguen aquí artículos, videos y recursos importantes</em></p>
                     <ul>
                         <li>📄 "Relaciones intergeneracionales en el mundo del trabajo" (1980-2007)</li>
                         <li>📄 "Centennials: razones para tener un plan de carrera"</li>
+                        <li>📊 <a href="#">Estudio sobre retención de talento (PDF)</a></li>
+                        <li>🎥 <a href="#">Video: Importancia del plan de carrera</a></li>
                     </ul>
                 </div>
                 <div class="panel-controls">
@@ -385,18 +421,20 @@
 <!-- ==================== -->
 <div id="modalInsertar" class="modal-insertar">
     <div class="modal-contenido">
-        <h3 id="modalTitulo">Insertar</h3>
-        <label id="modalLabel">Ingresa la URL o sube una imagen:</label>
-        <input type="text" id="modalInput" placeholder="https://ejemplo.com/imagen.png">
-        <div style="text-align:center;margin:10px 0;color:#888;">— O —</div>
-        <input type="file" id="modalFileInput" accept="image/*" style="width:100%;padding:10px;border:2px dashed #e0e0e0;border-radius:10px;cursor:pointer;" data-no-file-label="">
+        <h3 id="modalTitulo">Insertar imagen</h3>
+        <p style="color:#666;margin-bottom:15px;font-size:0.95rem;">Selecciona una imagen desde tu dispositivo o pega una desde el portapapeles</p>
+        <div style="text-align:center;margin:15px 0;">
+           <input type="file" id="modalFileInput" accept="image/*" onchange="cargarImagenDesdeInput(this)" style="width:100%;padding:12px;border:2px dashed #0f3460;border-radius:10px;cursor:pointer;font-size:0.95rem;">
+        </div>
         <div id="modalPreview" style="margin-top:10px;display:none;text-align:center;">
-            <img id="previewImagen" src="#" alt="Vista previa" style="max-width:100%;max-height:200px;border-radius:8px;">
+            <img id="previewImagen" src="#" alt="Vista previa" style="max-width:100%;max-height:250px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+            <p style="color:#666;font-size:0.85rem;margin-top:8px;">✅ Imagen cargada correctamente</p>
         </div>
         <div class="modal-botones">
-            <button onclick="confirmarInsercion()" class="btn-aceptar">✅ Insertar</button>
+            <button onclick="confirmarInsercion()" class="btn-aceptar" id="btnInsertarImagen" disabled style="opacity:0.5;cursor:not-allowed;">✅ Insertar</button>
             <button onclick="cerrarModal()" class="btn-cancelar">❌ Cancelar</button>
         </div>
+        <p style="color:#999;font-size:0.8rem;margin-top:10px;text-align:center;">💡 También puedes pegar una imagen con Ctrl+V desde Google Imágenes</p>
     </div>
 </div>
 
