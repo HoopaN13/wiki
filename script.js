@@ -1,8 +1,4 @@
-// ==================== */
-// CONFIGURACIÓN DE FIREBASE - REEMPLAZA CON TUS DATOS
-// ==================== */
-
-// 🔥 REEMPLAZA ESTOS VALORES CON LOS QUE COPASTE DE FIREBASE
+// CONFIGURACIÓN DE FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyD7aTvP0R7n8AoqjBLeZmcIFg8njajokM",
   authDomain: "wiki-desarrollo.firebaseapp.com",
@@ -13,10 +9,241 @@ const firebaseConfig = {
   measurementId: "G-DP3Y8TRFV1"
 };
 
-
 // Inicializar Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+
+// VARIABLES GLOBALES
+const DOCUMENTO_ID = 'wiki-planes-carrera';
+const COLECCION = 'wikis';
+let guardando = false;
+
+
+// ==================== */
+// GUARDAR EN LA NUBE (FIRESTORE)
+// ==================== */
+
+async function guardarEnNube() {
+    if (guardando) return;
+    guardando = true;
+    
+    try {
+        // Recorrer todos los paneles y guardar sus imágenes
+        document.querySelectorAll('.panel-editable').forEach(panel => {
+            const style = panel.getAttribute('style') || '';
+            const match = style.match(/background-image:\s*url\(["']?([^"')]*)["']?\)/i);
+            if (match && match[1] && match[1].startsWith('data:image')) {
+                panel.setAttribute('data-imagen-fondo', match[1]);
+            }
+        });
+
+        // Guardar estilos personalizados
+        guardarEstilosPersonalizados();
+
+        // Guardar el contenido sin modales
+        const clone = document.documentElement.cloneNode(true);
+        const modalVideoClone = clone.querySelector('#modalVideo');
+        const modalInsertarClone = clone.querySelector('#modalInsertar');
+        if (modalVideoClone) modalVideoClone.remove();
+        if (modalInsertarClone) modalInsertarClone.remove();
+        
+        const contenido = clone.outerHTML;
+        const estilos = cargarEstilosPersonalizados();
+
+        // Guardar en Firestore
+        await db.collection(COLECCION).doc(DOCUMENTO_ID).set({
+            contenido: contenido,
+            estilos: estilos,
+            fechaActualizacion: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+
+        // Backup en localStorage
+        localStorage.setItem('wiki-contenido', contenido);
+        localStorage.setItem('wiki-fecha', new Date().toLocaleString());
+
+        console.log('💾 Guardado en Firebase exitoso');
+    } catch (error) {
+        console.error('❌ Error al guardar en Firebase:', error);
+        // Fallback a localStorage
+        guardarEnLocal();
+    } finally {
+        guardando = false;
+    }
+}
+
+// Fallback local
+function guardarEnLocal() {
+    document.querySelectorAll('.panel-editable').forEach(panel => {
+        const style = panel.getAttribute('style') || '';
+        const match = style.match(/background-image:\s*url\(["']?([^"')]*)["']?\)/i);
+        if (match && match[1] && match[1].startsWith('data:image')) {
+            panel.setAttribute('data-imagen-fondo', match[1]);
+        }
+    });
+
+    guardarEstilosPersonalizados();
+
+    const clone = document.documentElement.cloneNode(true);
+    const modalVideoClone = clone.querySelector('#modalVideo');
+    const modalInsertarClone = clone.querySelector('#modalInsertar');
+    if (modalVideoClone) modalVideoClone.remove();
+    if (modalInsertarClone) modalInsertarClone.remove();
+    
+    const contenido = clone.outerHTML;
+    localStorage.setItem('wiki-contenido', contenido);
+    localStorage.setItem('wiki-fecha', new Date().toLocaleString());
+}
+
+// ==================== */
+// CARGAR DESDE LA NUBE (FIRESTORE)
+// ==================== */
+
+async function cargarDesdeNube() {
+    try {
+        const doc = await db.collection(COLECCION).doc(DOCUMENTO_ID).get();
+        
+        if (!doc.exists) {
+            console.log('📂 No hay datos en la nube. Usando contenido local.');
+            return false;
+        }
+
+        const data = doc.data();
+        console.log('📂 Cargando desde la nube.');
+
+        if (data.contenido) {
+            const bodyMatch = data.contenido.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+            if (bodyMatch) {
+                const nuevoBody = bodyMatch[1];
+                document.body.innerHTML = nuevoBody;
+            }
+        }
+
+        if (data.estilos) {
+            localStorage.setItem('wiki-estilos', JSON.stringify(data.estilos));
+            restaurarEstilosPersonalizados();
+        }
+
+        // Restaurar imágenes de fondo
+        document.querySelectorAll('.panel-editable[data-imagen-fondo]').forEach(panel => {
+            const imgData = panel.getAttribute('data-imagen-fondo');
+            if (imgData && imgData.startsWith('data:image')) {
+                panel.style.backgroundImage = `url(${imgData})`;
+                panel.style.backgroundSize = 'cover';
+                panel.style.backgroundPosition = 'center';
+                panel.style.backgroundRepeat = 'no-repeat';
+                panel.style.minHeight = '380px';
+                panel.style.borderRadius = '16px';
+                panel.style.border = '1px solid rgba(255,255,255,0.3)';
+                panel.style.boxShadow = '0 8px 32px rgba(0,0,0,0.15)';
+                panel.style.padding = '0';
+                panel.style.overflow = 'hidden';
+                panel.style.position = 'relative';
+                panel.style.backgroundColor = 'transparent';
+
+                if (!panel.querySelector('.panel-overlay')) {
+                    const overlay = document.createElement('div');
+                    overlay.className = 'panel-overlay';
+                    overlay.style.cssText = `
+                        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+                        background: linear-gradient(135deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.15) 100%);
+                        z-index: 1; border-radius: 16px; pointer-events: none;
+                    `;
+                    panel.prepend(overlay);
+                }
+
+                const contenidoPanel = panel.querySelector('div:not(.panel-overlay):not(.panel-controls)');
+                if (contenidoPanel) {
+                    contenidoPanel.style.cssText = `
+                        position: relative; z-index: 2; color: #ffffff;
+                        text-shadow: 0 2px 20px rgba(0,0,0,0.6), 0 0 40px rgba(0,0,0,0.3);
+                        padding: 40px 35px; min-height: 320px; background: transparent;
+                        border-radius: 16px; display: flex; flex-direction: column; justify-content: center;
+                    `;
+                    const textos = contenidoPanel.querySelectorAll('*');
+                    textos.forEach(el => {
+                        el.style.color = '#ffffff';
+                        el.style.textShadow = '0 2px 20px rgba(0,0,0,0.6), 0 0 40px rgba(0,0,0,0.3)';
+                    });
+                }
+            }
+        });
+
+        mostrarNotificacion('📂 Contenido cargado desde la nube');
+        return true;
+    } catch (error) {
+        console.error('❌ Error al cargar desde la nube:', error);
+        return false;
+    }
+}
+
+// ==================== */
+// INICIALIZACIÓN AL CARGAR
+// ==================== */
+
+async function cargarDatosIniciales() {
+    console.log('🚀 Iniciando carga desde la nube...');
+    
+    const cargado = await cargarDesdeNube();
+    
+    if (!cargado) {
+        const contenidoGuardado = localStorage.getItem('wiki-contenido');
+        if (contenidoGuardado && contenidoGuardado.length > 0) {
+            console.log('📂 Cargando desde localStorage (fallback)');
+            const bodyMatch = contenidoGuardado.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+            if (bodyMatch) {
+                document.body.innerHTML = bodyMatch[1];
+            }
+            restaurarEstilosPersonalizados();
+        }
+    }
+    
+    const panelPersonalizacion = document.getElementById('panelPersonalizacion');
+    const btnAbrirPanel = document.getElementById('btnAbrirPanel');
+    if (panelPersonalizacion) panelPersonalizacion.classList.remove('abierto');
+    if (btnAbrirPanel) btnAbrirPanel.classList.remove('oculto');
+    
+    if (window.intervaloAutoGuardar) {
+        clearInterval(window.intervaloAutoGuardar);
+    }
+    window.intervaloAutoGuardar = setInterval(autoGuardar, 10000);
+    console.log('💾 Auto-guardado en la nube activado cada 10 segundos');
+}
+
+// ==================== */
+// VERIFICAR FIREBASE Y CARGAR
+// ==================== */
+
+let firebaseCargado = false;
+
+function verificarFirebaseYcargar() {
+    if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
+        if (!firebaseCargado) {
+            firebaseCargado = true;
+            cargarDatosIniciales();
+        }
+        return true;
+    }
+    return false;
+}
+
+// Intentar cargar inmediatamente
+if (!verificarFirebaseYcargar()) {
+    const interval = setInterval(() => {
+        if (verificarFirebaseYcargar()) {
+            clearInterval(interval);
+        }
+    }, 500);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
+        if (!firebaseCargado) {
+            firebaseCargado = true;
+            cargarDatosIniciales();
+        }
+    }
+});
+
 
 // ==================== */
 // NOTIFICACIONES
@@ -91,8 +318,8 @@ function guardarCambios() {
 }
 
 function guardarCambiosConNotificacion() {
-    guardarCambios();
-    mostrarNotificacion('✅ ¡Cambios guardados!');
+    guardarEnNube();
+    mostrarNotificacion('✅ ¡Cambios guardados en la nube!');
 }
 
 function guardarEstilosPersonalizados() {
@@ -680,20 +907,21 @@ function restaurarEstilosPersonalizados() {
 }
 
 function resetearPagina() {
-    if (confirm('⚠️ ¿Seguro que quieres resetear la página? PERDERÁS TODOS LOS CAMBIOS GUARDADOS.')) {
-        // ✅ Marcar que estamos en modo reset
+    if (confirm('⚠️ ¿Seguro que quieres resetear la página? PERDERÁS TODOS LOS CAMBIOS GUARDADOS en la nube y localmente.')) {
         sessionStorage.setItem('resetEnProgreso', 'true');
         
-        // Limpiar todo el localStorage
+        // Eliminar de Firestore
+        db.collection(COLECCION).doc(DOCUMENTO_ID).delete()
+            .then(() => console.log('🗑️ Datos eliminados de Firestore'))
+            .catch(err => console.error('Error al eliminar de Firestore:', err));
+        
         localStorage.clear();
         
-        // Desactivar auto-guardado
         if (window.intervaloAutoGuardar) {
             clearInterval(window.intervaloAutoGuardar);
             window.intervaloAutoGuardar = null;
         }
         
-        // Recargar la página
         location.reload(true);
     }
 }
@@ -1798,11 +2026,10 @@ function cargarImagenDesdeInput(input) {
 // ==================== */
 
 function autoGuardar() {
-    // ✅ No guardar si estamos en modo reset
     if (sessionStorage.getItem('resetEnProgreso') === 'true') {
         return;
     }
-    guardarCambios();
+    guardarEnNube();
 }
 
 // Guardar automáticamente cada 5 segundos
